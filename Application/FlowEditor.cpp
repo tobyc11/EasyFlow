@@ -55,6 +55,25 @@ void CFlowEditor::OnMouseMove(wxMouseEvent& evt)
 		Render(dc);
 	}
 
+	// Dispatch events to node proxies
+	SRenderEvtParams params;
+	params.evt = SRenderEvtParams::RE_MOUSE_OVER;
+	params.x = evt.GetX();
+	params.y = evt.GetY();
+	for (TFlowNodeNPList::iterator iter = mNodeProxy.begin();
+		iter != mNodeProxy.end();
+		iter++)
+	{
+		if ((*iter)->PointInside(params.x, params.y))
+			(*iter)->ProcessEvents(params);
+		else
+		{
+			params.evt = SRenderEvtParams::RE_MOUSE_MOVE;
+			(*iter)->ProcessEvents(params);
+			params.evt = SRenderEvtParams::RE_MOUSE_OVER;
+		}
+	}
+
 	GETMF();
 	CFlowGraph* fg = mf->GetFlowGraph();
 	NNode* sn = fg->GetSpawningNode();
@@ -69,6 +88,7 @@ void CFlowEditor::OnMouseMove(wxMouseEvent& evt)
 	}
 }
 
+// Process event when left mouse buttton is pressed
 void CFlowEditor::OnLeftDown(wxMouseEvent& evt)
 {
 	GETMF();
@@ -85,6 +105,19 @@ void CFlowEditor::OnLeftDown(wxMouseEvent& evt)
 		flowGraph->SpawnNode(flowGraph->GetSpawningNode());
 		mf->PaintFlowEditor();
 		return;
+	}
+
+	// Dispatch events to node proxies
+	SRenderEvtParams params;
+	params.evt = SRenderEvtParams::RE_LEFT_DOWN;
+	params.x = evt.GetX();
+	params.y = evt.GetY();
+	for (TFlowNodeNPList::iterator iter = mNodeProxy.begin();
+		iter != mNodeProxy.end();
+		iter++)
+	{
+		if ((*iter)->PointInside(params.x, params.y))
+			(*iter)->ProcessEvents(params);
 	}
 }
 
@@ -119,6 +152,8 @@ void CFlowEditor::Render(wxDC& dc)
 	CFlowGraph* fg = mf->GetFlowGraph();
 
 	dc.Clear();
+	dc.SetBrush(wxBrush(wxColor(255, 0, 0)));
+	dc.DrawCircle(WorldToWindow(wxPoint(0, 0)), 10);
 	for (TFlowNodeNPList::iterator iter = mNodeProxy.begin();
 		iter != mNodeProxy.end();
 		iter++)
@@ -146,4 +181,19 @@ wxPoint CFlowEditor::WindowToWorld(wxPoint& p)
 wxPoint CFlowEditor::WorldToWindow(wxPoint& p)
 {
 	return wxPoint(p.x - mOX, p.y - mOY);
+}
+
+SWire* CFlowEditor::AddWire(CFlowNodeRenderProxy* left, CFlowNodeRenderProxy* right)
+{
+	SWire* wire = new SWire();
+	if (left)
+	{
+		wire->from = left;
+		//wire->frPos
+	}
+	if (right)
+	{
+		wire->to = right;
+	}
+	return wire;
 }

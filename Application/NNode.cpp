@@ -1,6 +1,6 @@
 #include "NNode.h"
 
-REGISTER_NODE(NNode, "Basic Node");
+REGISTER_NODE(NNode, "Basic Node/Does nothing");
 
 NNode::NNode()
 {

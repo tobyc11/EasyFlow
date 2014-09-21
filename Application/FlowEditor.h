@@ -3,6 +3,19 @@
 #include <list>
 
 class CFlowNodeRenderProxy;
+struct SWire
+{
+	CFlowNodeRenderProxy* from;
+	CFlowNodeRenderProxy* to;
+	wxPoint frPos;
+	wxPoint toPos;
+	int frSkt, toSkt;
+	inline void Render(wxDC& dc)
+	{
+		dc.DrawLine(frPos, toPos);
+	}
+};
+
 class CFlowEditor : public wxPanel
 {
 public:
@@ -21,9 +34,11 @@ public:
 	const wxPoint& GetOrigin();
 	wxPoint WindowToWorld(wxPoint& p);
 	wxPoint WorldToWindow(wxPoint& p);
+	SWire* AddWire(CFlowNodeRenderProxy* left, CFlowNodeRenderProxy* right);
 
 private:
 	typedef std::list<CFlowNodeRenderProxy*> TFlowNodeNPList;
+	typedef std::list<SWire*> TWireList;
 	int mMX, mMY;
 	int mOX, mOY;
 	int mDragOX, mDragOY, mSaveDragOX, mSaveDragOY;
@@ -31,5 +46,6 @@ private:
 	wxPoint mOrigin;
 	wxString mCurrStr;
 	TFlowNodeNPList mNodeProxy;
+	TWireList mWires;
 	DECLARE_EVENT_TABLE();
 };
