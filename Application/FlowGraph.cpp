@@ -45,6 +45,7 @@ NNode* CFlowGraph::GetSpawningNode()
 void CFlowGraph::SpawnNode(NNode* thenode)
 {
 	mSpawningNode = 0;
+	mNodes[thenode->GetName()] = thenode;
 }
 
 void CFlowGraph::CancelSpawnNode()

@@ -7,6 +7,11 @@ NNode::NNode()
 
 }
 
+NNode::NNode(UNodeRegister* type)
+{
+	mType = type;
+}
+
 NNode::~NNode()
 {
 
@@ -47,3 +52,7 @@ std::string& NNode::GetName()
 	return mName;
 }
 
+UNodeRegister* NNode::GetType()
+{
+	return mType;
+}

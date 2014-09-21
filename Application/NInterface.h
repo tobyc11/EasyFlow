@@ -19,5 +19,6 @@ public:
 };
 
 #define REGISTER_NODE(classname, description) \
-	NNode* classname##Factory() { return new classname; } \
-	UNodeRegister classname##Register(#classname, classname##Factory, description);
+	NNode* classname##Factory(); \
+	UNodeRegister classname##Register(#classname, classname##Factory, description); \
+	NNode* classname##Factory() { return new classname(&classname##Register); }

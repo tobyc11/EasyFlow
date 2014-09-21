@@ -2,10 +2,12 @@
 #include "FlowGraph.h"
 #include "MainFrame.h"
 #include "NNode.h"
+#include "FlowNodeRenderProxy.h"
 
 BEGIN_EVENT_TABLE(CFlowEditor, wxPanel)
 	EVT_PAINT(CFlowEditor::OnPaint)
 	EVT_MOTION(CFlowEditor::OnMouseMove)
+	EVT_LEFT_DOWN(CFlowEditor::OnLeftDown)
 END_EVENT_TABLE()
 
 CFlowEditor::CFlowEditor()
@@ -51,6 +53,24 @@ void CFlowEditor::OnMouseMove(wxMouseEvent& evt)
 		mCurrStr = sn->GetName().c_str();
 		wxClientDC dc(this);
 		Render(dc);
+		return;
+	}
+}
+
+void CFlowEditor::OnLeftDown(wxMouseEvent& evt)
+{
+	GETMF();
+	CFlowGraph* flowGraph = mf->GetFlowGraph();
+	if (flowGraph->GetSpawningNode())
+	{
+		flowGraph->GetSpawningNode()->SetPosition(evt.GetX(), evt.GetY());
+		mNodeProxy.push_back(
+			new CFlowNodeRenderProxy(
+			this, flowGraph->GetSpawningNode()
+			));
+		flowGraph->SpawnNode(flowGraph->GetSpawningNode());
+		mf->PaintFlowEditor();
+		return;
 	}
 }
 
@@ -60,13 +80,16 @@ void CFlowEditor::Render(wxDC& dc)
 	CFlowGraph* fg = mf->GetFlowGraph();
 
 	dc.Clear();
-	// Draw existing graph
+	for (TFlowNodeNPList::iterator iter = mNodeProxy.begin();
+		iter != mNodeProxy.end();
+		iter++)
+	{
+		(*iter)->Render();
+	}
 
 	NNode* sn = fg->GetSpawningNode();
 	if (sn)
 	{
-		wxString a;
-		a = wxString("Current spawning node: ") + mCurrStr;
-		dc.DrawText(a, mMX, mMY);
+		dc.DrawText(mCurrStr, mMX, mMY);
 	}
 }

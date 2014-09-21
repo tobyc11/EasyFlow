@@ -6,6 +6,7 @@ class NNode
 {
 public:
 	NNode();
+	NNode(UNodeRegister* type);
 	~NNode();
 	bool Init(std::string& name);
 	bool Init(std::string& name, int x, int y);
@@ -13,7 +14,10 @@ public:
 	int GetX();
 	int GetY();
 	std::string& GetName();
-private:
+	UNodeRegister* GetType();
+protected:
+	UNodeRegister* mType;
 	std::string mName;
 	int mX, mY;
+private:
 };

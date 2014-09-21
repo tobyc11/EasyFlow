@@ -1,4 +1,5 @@
 #pragma once
+#include <unordered_map>
 
 class CFlowEditor;
 class NNode;
@@ -17,8 +18,9 @@ public:
 	void CancelSpawnNode();
 
 private:
+	typedef std::unordered_map < std::string, NNode* > TNodeMap;
 	static int sUnnamedCount;
 	CFlowEditor* mEditor;
-	NNode* mNodes;
+	TNodeMap mNodes;
 	NNode* mSpawningNode;
 };
