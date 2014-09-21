@@ -8,6 +8,7 @@ BEGIN_EVENT_TABLE(CFlowEditor, wxPanel)
 	EVT_PAINT(CFlowEditor::OnPaint)
 	EVT_MOTION(CFlowEditor::OnMouseMove)
 	EVT_LEFT_DOWN(CFlowEditor::OnLeftDown)
+	EVT_LEFT_UP(CFlowEditor::OnLeftUp)
 	EVT_RIGHT_DOWN(CFlowEditor::OnRightDown)
 	EVT_RIGHT_UP(CFlowEditor::OnRightUp)
 END_EVENT_TABLE()
@@ -24,6 +25,7 @@ CFlowEditor::CFlowEditor(wxWindow *parent, wxWindowID winid)
 	mCurrStr = wxString();
 	mOX = mOY = 0;
 	mDragging = false;
+	mCurrWire = 0;
 	//mRenderLock = 0;
 }
 
@@ -74,6 +76,15 @@ void CFlowEditor::OnMouseMove(wxMouseEvent& evt)
 		}
 	}
 
+	// Handle wire
+	SWire* tempWire;
+	if (tempWire = GetTempWire())
+	{
+		tempWire->toPos = WindowToWorld(wxPoint(evt.GetX(), evt.GetY()));
+		wxClientDC dc(this);
+		Render(dc);
+	}
+
 	GETMF();
 	CFlowGraph* fg = mf->GetFlowGraph();
 	NNode* sn = fg->GetSpawningNode();
@@ -121,6 +132,28 @@ void CFlowEditor::OnLeftDown(wxMouseEvent& evt)
 	}
 }
 
+void CFlowEditor::OnLeftUp(wxMouseEvent& evt)
+{
+	// Dispatch events to node proxies
+	SRenderEvtParams params;
+	params.evt = SRenderEvtParams::RE_LEFT_UP;
+	params.x = evt.GetX();
+	params.y = evt.GetY();
+	for (TFlowNodeNPList::iterator iter = mNodeProxy.begin();
+		iter != mNodeProxy.end();
+		iter++)
+	{
+		if ((*iter)->PointInside(params.x, params.y))
+			(*iter)->ProcessEvents(params);
+	}
+
+	if (GetTempWire())
+	{
+		CancelTempWire();
+		Render(wxClientDC(this));
+	}
+}
+
 void CFlowEditor::OnRightDown(wxMouseEvent& evt)
 {
 	GETMF();
@@ -154,17 +187,30 @@ void CFlowEditor::Render(wxDC& dc)
 	dc.Clear();
 	dc.SetBrush(wxBrush(wxColor(255, 0, 0)));
 	dc.DrawCircle(WorldToWindow(wxPoint(0, 0)), 10);
+	//Draw nodes
 	for (TFlowNodeNPList::iterator iter = mNodeProxy.begin();
 		iter != mNodeProxy.end();
 		iter++)
 	{
 		(*iter)->Render();
 	}
+	//Draw wires
+	for (TWireList::iterator iter = mWires.begin();
+		iter != mWires.end();
+		iter++)
+	{
+		(*iter)->Render(wxClientDC(this), this);
+	}
 
 	NNode* sn = fg->GetSpawningNode();
 	if (sn)
 	{
 		dc.DrawText(mCurrStr, mMX, mMY);
+	}
+
+	if (mCurrWire)
+	{
+		mCurrWire->Render(wxClientDC(this), this);
 	}
 }
 
@@ -185,15 +231,69 @@ wxPoint CFlowEditor::WorldToWindow(wxPoint& p)
 
 SWire* CFlowEditor::AddWire(CFlowNodeRenderProxy* left, CFlowNodeRenderProxy* right)
 {
+	//Unusable
 	SWire* wire = new SWire();
 	if (left)
 	{
 		wire->from = left;
-		//wire->frPos
+		//wire->frPos = left->
 	}
 	if (right)
 	{
 		wire->to = right;
 	}
 	return wire;
+}
+
+SWire* CFlowEditor::AddWire(SWire* w)
+{
+	this->mWires.push_back(w);
+	return w;
+}
+
+SWire* CFlowEditor::SpawnTempWire(CFlowNodeRenderProxy* fromleft, CFlowNodeRenderProxy* fromright)
+{
+	this->mCurrWire = new SWire();
+	mCurrWire->from = fromleft;
+	mCurrWire->to = fromright;
+	return mCurrWire;
+}
+
+void CFlowEditor::CancelTempWire()
+{
+	delete mCurrWire;
+	mCurrWire = 0;
+}
+
+void CFlowEditor::FinishTempWire()
+{
+	if (mCurrWire)
+	{
+		// Linked to itself?
+		if (mCurrWire->from == mCurrWire->to)
+			CancelTempWire();
+
+		// Test if there is already wires linked to point
+		for (TWireList::iterator iter = mWires.begin();
+			iter != mWires.end();
+			iter++)
+		{
+			if ((*iter)->from == mCurrWire->from)
+			{
+				// Handle form same socket
+			}
+			if ((*iter)->to == mCurrWire->to)
+			{
+				// Handle to same socket
+			}
+		}
+
+		// Update the underlying CFlowGraph
+		mCurrWire = 0;
+	}
+}
+
+SWire* CFlowEditor::GetTempWire()
+{
+	return mCurrWire;
 }

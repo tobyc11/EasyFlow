@@ -42,11 +42,14 @@ void CFlowNodeRenderProxy::Render(wxDC& dc)
 	dc.DrawLine(mNode->GetX() - origin.x, mNode->GetY() + 28 - origin.y,
 		mNode->GetX() + 100 - origin.x, mNode->GetY() + 28 - origin.y);
 
+	// Draw left socket
 	dc.SetBrush(wxBrush(wxColor(128, 240, 200)));
 	SetHighlightPen(dc, mHighlightLeft || mHighlightAll);
 	dc.DrawCircle(mParent->WorldToWindow(
 		wxPoint(mNode->GetX(), mNode->GetY() + 38)), 10);
 	dc.SetBrush(wxBrush(wxColor(128, 240, 200)));
+
+	// Draw right socket
 	SetHighlightPen(dc, mHighlightRight || mHighlightAll);
 	dc.DrawCircle(mParent->WorldToWindow(
 		wxPoint(mNode->GetX() + 100, mNode->GetY() + 38)), 10);
@@ -78,7 +81,9 @@ void CFlowNodeRenderProxy::ProcessEvents(SRenderEvtParams params)
 	{
 	case SRenderEvtParams::RE_LEFT_DOWN:
 		goto LEFT_DOWN;
-	case SRenderEvtParams::RE_MOUSE_OVER:
+	case SRenderEvtParams::RE_LEFT_UP:
+		goto LEFT_UP;
+	case SRenderEvtParams::RE_MOUSE_OVER: //Same as MouseOver
 	case SRenderEvtParams::RE_MOUSE_MOVE:
 		goto MOUSE_OVER;
 	default:
@@ -86,9 +91,35 @@ void CFlowNodeRenderProxy::ProcessEvents(SRenderEvtParams params)
 	}
 
 LEFT_DOWN:
+	SWire* tWire;
 	switch (DeterminePart(params.x, params.y))
 	{
 	case PART_S_LEFT:
+		break;
+	case PART_S_RIGHT:
+		tWire = mParent->SpawnTempWire(this);
+		tWire->frPos = wxPoint(mNode->GetX() + 100, mNode->GetY() + 38);
+		tWire->frSkt = PART_S_RIGHT;
+		tWire->toPos = wxPoint(0, 0);
+		break;
+	default:
+		break;
+	}
+	return;
+
+LEFT_UP:
+	switch (DeterminePart(params.x, params.y))
+	{
+	case PART_S_LEFT:
+		if (tWire = mParent->GetTempWire())
+		{
+			tWire->to = this;
+			tWire->toPos = wxPoint(mNode->GetX(), mNode->GetY() + 38);
+			tWire->toSkt = PART_S_LEFT;
+			mParent->FinishTempWire();
+			mParent->AddWire(tWire);
+			mParent->Render(wxClientDC(mParent));
+		}
 		break;
 	case PART_S_RIGHT:
 		break;
@@ -96,6 +127,7 @@ LEFT_DOWN:
 		break;
 	}
 	return;
+
 MOUSE_OVER:
 	mMouseWndPos = wxPoint(params.x, params.y);
 	switch (DeterminePart(mMouseWndPos.x, mMouseWndPos.y))
