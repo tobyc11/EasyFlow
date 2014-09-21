@@ -46,9 +46,6 @@ void CToolBox::CreateControls()
 void CToolBox::OnNodeButton(wxCommandEvent& evt)
 {
 	int id = evt.GetId();
-	//wxString a;
-	//a.sprintf("%d", id);
-	//wxMessageBox(a);
 	GETMF();
 	mf->GetFlowGraph()->StartSpawnNode(id);
 }

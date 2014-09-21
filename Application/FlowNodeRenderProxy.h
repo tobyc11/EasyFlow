@@ -1,18 +1,20 @@
 #pragma once
 #include <wx/wx.h>
 
+class CFlowEditor;
 class NNode;
 class CFlowNodeRenderProxy
 {
 private:
 	CFlowNodeRenderProxy();
 public:
-	CFlowNodeRenderProxy(wxWindow* parent, NNode* node);
+	CFlowNodeRenderProxy(CFlowEditor* parent, NNode* node);
 	~CFlowNodeRenderProxy();
 	void Render();
 	void Render(wxDC& dc);
+	bool PointInside(int x, int y);
 
 private:
-	wxFrame* mParent;
+	CFlowEditor* mParent;
 	NNode* mNode;
 };
