@@ -4,6 +4,7 @@
 #include "MainFrame.h"
 #include "NNode.h"
 #include "FlowNodeRenderProxy.h"
+#include "NodePropertyController.h"
 
 BEGIN_EVENT_TABLE(CFlowEditor, wxPanel)
 	EVT_PAINT(CFlowEditor::OnPaint)
@@ -130,7 +131,16 @@ void CFlowEditor::OnLeftDown(wxMouseEvent& evt)
 		iter++)
 	{
 		if ((*iter)->PointInside(params.x, params.y))
+		{
 			(*iter)->ProcessEvents(params);
+
+			// By the way select this, tell NodePropController
+			if (!GetTempWire())
+			{
+				gEnv->PropCtrl->SetTargetNode((*iter)->GetNNode());
+				gEnv->PropCtrl->UpdatePropertiesFromTarget();
+			}
+		}
 	}
 }
 

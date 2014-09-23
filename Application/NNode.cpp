@@ -21,14 +21,25 @@ NNode::~NNode()
 bool NNode::Init(std::string& name)
 {
 	mName = name;
-	return true;
-}
 
-bool NNode::Init(std::string& name, int x, int y)
-{
-	if (!Init(name))
-		return false;
-	SetPosition(x, y);
+	{
+		CNodeProperty prop;
+		prop.mOwner = this;
+		prop.mName = "TestProp";
+		prop.mType = "T"; // T:Text D:Dropdown Menu C:CheckBox
+		prop.mValue = "";
+		mPropTable.push_back(prop);
+	}
+
+	{
+		CNodeProperty prop;
+		prop.mOwner = this;
+		prop.mName = "TP2";
+		prop.mType = "C"; // T:Text D:Dropdown Menu C:CheckBox
+		prop.mValue = "F";
+		mPropTable.push_back(prop);
+	}
+
 	return true;
 }
 

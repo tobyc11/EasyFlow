@@ -29,6 +29,9 @@ public:
 
 	wxStatusBar* mStatusbar;
 
+	wxRibbonPage* mPropertyPage;
+	wxRibbonPanel* mPropertyPanel;
+
 private:
 	CFlowGraph* mFlowGraph;
 	CFlowEditor* mFlowEditor;

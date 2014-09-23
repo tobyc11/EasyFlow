@@ -3,6 +3,7 @@
 #include "ToolBox.h"
 #include "FlowEditor.h"
 #include "FlowGraph.h"
+#include "NodePropertyController.h"
 #include <wx/aboutdlg.h>
 // #include <dwmapi.h>
 #include <Main\XPM\ico.xpm>
@@ -24,6 +25,7 @@ CMainFrame::CMainFrame()
 	: wxFrame(NULL, wxID_ANY, "myFlow", wxDefaultPosition, wxDefaultSize)
 {
 	gEnv->MainFrame = this;
+	mPropertyPanel = 0;
 	SetIcon(wxIcon(tip_xpm));
 	Maximize(true);
 	CreateControls();
@@ -54,6 +56,7 @@ void CMainFrame::CreateControls()
 	mRibbon->SetTabCtrlMargins(10, 20);
 	{
 		wxRibbonPage* rpage = new wxRibbonPage(mRibbon, -1, "Common");
+		mPropertyPage = rpage;
 		wxRibbonPanel* rpanel = new wxRibbonPanel(rpage, wxID_ANY, "Common");
 		wxRibbonToolBar* rtoolbar = new wxRibbonToolBar(rpanel);
 		rtoolbar->AddTool(wxID_NEW, ICO_NEW, "New");
@@ -67,10 +70,6 @@ void CMainFrame::CreateControls()
 		rtoolbar->AddTool(wxID_OK, Lite_Icon_icon, "Generate");
 		rtoolbar->AddTool(wxID_EXECUTE, Lite_Icon_icon, "Dump Graph Info");
 		//rtoolbar->SetRows(2, 3);
-
-		rpanel = new wxRibbonPanel(rpage, wxID_ANY, "Node");
-		wxChoice* choice = new wxChoice(rpanel, wxID_ANY, wxPoint(5, 5), wxSize(100, 20));
-		wxTextCtrl* text = new wxTextCtrl(rpanel, wxID_ANY, wxEmptyString, wxPoint(5, 30), wxSize(100, 20));
 	}
 	{
 		wxRibbonPage* rpage = new wxRibbonPage(mRibbon, wxID_ANY, "About");
@@ -103,6 +102,7 @@ void CMainFrame::CreateControls()
 
 	mFlowGraph = new CFlowGraph();
 	mFlowGraph->BindEditor(mFlowEditor);
+	new CNodePropertyController;
 }
 
 void CMainFrame::OnClose(wxCloseEvent& evt)

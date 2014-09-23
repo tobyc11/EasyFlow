@@ -6,12 +6,14 @@ class CMainFrame;
 class CFlowGraph;
 class CFlowEditor;
 class CToolBox;
+class CNodePropertyController;
 struct CGlobalEnvironment
 {
 	CMainFrame* MainFrame;
 	CToolBox* ToolBox;
 	CFlowGraph* FlowGraph;
 	CFlowEditor* FlowEditor;
+	CNodePropertyController* PropCtrl;
 };
 
 extern CGlobalEnvironment* gEnv;
