@@ -2,10 +2,10 @@
 
 REGISTER_NODE(NNode, "Basic Node/Does nothing");
 
-NNode::NNode()
-{
-	mLeftSib = mRightSib = mDownSib = 0;
-}
+//NNode::NNode()
+//{
+//	mLeftSib = mRightSib = mDownSib = 0;
+//}
 
 NNode::NNode(UNodeRegister* type)
 {

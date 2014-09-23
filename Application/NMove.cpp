@@ -2,9 +2,8 @@
 
 REGISTER_NODE(NMove, "Control Motion")
 
-NMove::NMove(UNodeRegister* type)
+NMove::NMove(UNodeRegister* type) : NNode(type)
 {
-	mType = type;
 }
 
 NMove::~NMove()

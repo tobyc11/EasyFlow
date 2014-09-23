@@ -74,17 +74,18 @@ const char* CFlowGraph::GetStatus()
 		NNode* sibTest;
 		if (sibTest = (*iter).second->GetSibling(NNode::NS_LEFT))
 		{
-			sprintf_s(curr, "%s ", sibTest->GetName().c_str());
+			sprintf_s(curr, "LEFT: %s ", sibTest->GetName().c_str());
 			strcat_s(mStatusText, curr);
 		}
 		if (sibTest = (*iter).second->GetSibling(NNode::NS_RIGHT))
 		{
-			sprintf_s(curr, "%s ", sibTest->GetName().c_str());
+			sprintf_s(curr, "RIGHT: %s ", sibTest->GetName().c_str());
 			strcat_s(mStatusText, curr);
 		}
-		if (sibTest = (*iter).second->GetSibling(NNode::NS_LEFT))
+		if (sibTest = (*iter).second->GetSibling(NNode::NS_DOWN))
 		{
-
+			sprintf_s(curr, "DOWN: %s ", sibTest->GetName().c_str());
+			strcat_s(mStatusText, curr);
 		}
 		sprintf_s(curr, "\n");
 		strcat_s(mStatusText, curr);

@@ -12,7 +12,6 @@ public:
 		NS_DOWN
 	};
 
-	NNode();
 	NNode(UNodeRegister* type);
 	~NNode();
 	bool Init(std::string& name);
