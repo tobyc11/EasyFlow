@@ -1,3 +1,4 @@
+#include <Main\Common.h>
 #include "FlowEditor.h"
 #include "FlowGraph.h"
 #include "MainFrame.h"
@@ -15,12 +16,13 @@ END_EVENT_TABLE()
 
 CFlowEditor::CFlowEditor()
 {
-
+	gEnv->FlowEditor = this;
 }
 
 CFlowEditor::CFlowEditor(wxWindow *parent, wxWindowID winid)
 	: wxPanel(parent, winid)
 {
+	gEnv->FlowEditor = this;
 	CreateControls();
 	mCurrStr = wxString();
 	mOX = mOY = 0;
@@ -271,7 +273,10 @@ void CFlowEditor::FinishTempWire()
 	{
 		// Linked to itself?
 		if (mCurrWire->from == mCurrWire->to)
+		{
 			CancelTempWire();
+			return;
+		}
 
 		// Test if there is already wires linked to point
 		for (TWireList::iterator iter = mWires.begin();
@@ -289,6 +294,10 @@ void CFlowEditor::FinishTempWire()
 		}
 
 		// Update the underlying CFlowGraph
+		NNode *manleft = mCurrWire->from->GetNNode();
+		manleft->SetSibling(mCurrWire->frSkt, mCurrWire->to->GetNNode());
+		NNode *manright = mCurrWire->to->GetNNode();
+		manright->SetSibling(mCurrWire->toSkt, mCurrWire->from->GetNNode());
 		mCurrWire = 0;
 	}
 }

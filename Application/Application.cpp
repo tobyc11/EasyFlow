@@ -1,5 +1,9 @@
+#include <Main/Common.h>
 #include "Application.h"
 #include "MainFrame.h"
+
+CGlobalEnvironment sEnv;
+CGlobalEnvironment* gEnv = &sEnv;
 
 wxIMPLEMENT_APP(CApplication);
 

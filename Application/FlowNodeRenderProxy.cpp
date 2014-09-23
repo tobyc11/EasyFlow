@@ -21,6 +21,11 @@ CFlowNodeRenderProxy::~CFlowNodeRenderProxy()
 
 }
 
+NNode* CFlowNodeRenderProxy::GetNNode()
+{
+	return mNode;
+}
+
 void CFlowNodeRenderProxy::Render()
 {
 	Render(wxClientDC(mParent));
@@ -99,7 +104,7 @@ LEFT_DOWN:
 	case PART_S_RIGHT:
 		tWire = mParent->SpawnTempWire(this);
 		tWire->frPos = wxPoint(mNode->GetX() + 100, mNode->GetY() + 38);
-		tWire->frSkt = PART_S_RIGHT;
+		tWire->frSkt = NNode::NS_RIGHT;
 		tWire->toPos = wxPoint(0, 0);
 		break;
 	default:
@@ -115,7 +120,7 @@ LEFT_UP:
 		{
 			tWire->to = this;
 			tWire->toPos = wxPoint(mNode->GetX(), mNode->GetY() + 38);
-			tWire->toSkt = PART_S_LEFT;
+			tWire->toSkt = NNode::NS_LEFT;
 			mParent->FinishTempWire();
 			mParent->AddWire(tWire);
 			mParent->Render(wxClientDC(mParent));

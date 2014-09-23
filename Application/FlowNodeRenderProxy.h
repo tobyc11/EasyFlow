@@ -26,6 +26,7 @@ private:
 public:
 	CFlowNodeRenderProxy(CFlowEditor* parent, NNode* node);
 	~CFlowNodeRenderProxy();
+	NNode* GetNNode();
 	void Render();
 	void Render(wxDC& dc);
 	void SetHighlightPen(wxDC& dc, bool hi);

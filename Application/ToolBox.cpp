@@ -1,3 +1,4 @@
+#include <Main/Common.h>
 #include "ToolBox.h"
 #include "MainFrame.h"
 #include "FlowGraph.h"
@@ -11,12 +12,14 @@ END_EVENT_TABLE()
 
 CToolBox::CToolBox()
 {
+	gEnv->ToolBox = this;
 	// CreateControls();
 }
 
 CToolBox::CToolBox(wxWindow *parent, wxWindowID winid)
 	: wxPanel(parent, winid)
 {
+	gEnv->ToolBox = this;
 	CreateControls();
 }
 

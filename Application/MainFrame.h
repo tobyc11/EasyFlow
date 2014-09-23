@@ -16,11 +16,13 @@ public:
 	~CMainFrame();
 	void CreateControls();
 
+	void OnClose(wxCloseEvent& evt);
 	void OnPaint(wxPaintEvent& evt);
 	void OnQuit(wxCommandEvent& evt);
 	void OnAbout(wxCommandEvent& evt);
 	void OnRibbonAbout(wxRibbonToolBarEvent& evt);
 	void OnRibbonTips(wxRibbonToolBarEvent& evt);
+	void OnRibbonDump(wxRibbonToolBarEvent& evt);
 
 	CFlowGraph* GetFlowGraph();
 	void PaintFlowEditor();

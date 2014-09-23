@@ -12,15 +12,18 @@
 #include <Main\XPM\Lite-Icon-icon.xpm>
 
 BEGIN_EVENT_TABLE(CMainFrame, wxFrame)
+	EVT_CLOSE(CMainFrame::OnClose)
 	EVT_MENU(wxID_EXIT, CMainFrame::OnQuit)
 	EVT_MENU(wxID_ABOUT, CMainFrame::OnAbout)
 	EVT_RIBBONTOOLBAR_CLICKED(wxID_ABOUT, CMainFrame::OnRibbonAbout)
 	EVT_RIBBONTOOLBAR_CLICKED(wxID_HELP_INDEX, CMainFrame::OnRibbonTips)
+	EVT_RIBBONTOOLBAR_CLICKED(wxID_EXECUTE, CMainFrame::OnRibbonDump)
 END_EVENT_TABLE()
 
 CMainFrame::CMainFrame()
 	: wxFrame(NULL, wxID_ANY, "myFlow", wxDefaultPosition, wxDefaultSize)
 {
+	gEnv->MainFrame = this;
 	SetIcon(wxIcon(tip_xpm));
 	Maximize(true);
 	CreateControls();
@@ -51,7 +54,7 @@ void CMainFrame::CreateControls()
 	mRibbon->SetTabCtrlMargins(10, 20);
 	{
 		wxRibbonPage* rpage = new wxRibbonPage(mRibbon, -1, "Common");
-		wxRibbonPanel* rpanel = new wxRibbonPanel(rpage);
+		wxRibbonPanel* rpanel = new wxRibbonPanel(rpage, wxID_ANY, "Common");
 		wxRibbonToolBar* rtoolbar = new wxRibbonToolBar(rpanel);
 		rtoolbar->AddTool(wxID_NEW, ICO_NEW, "New");
 		rtoolbar->AddTool(wxID_SAVE, ICO_SAVE, "Save");
@@ -59,15 +62,19 @@ void CMainFrame::CreateControls()
 		rtoolbar->AddTool(wxID_ABOUT, tip_xpm, "About");
 		//rtoolbar->SetRows(2, 2);
 
-		rpanel = new wxRibbonPanel(rpage);
+		rpanel = new wxRibbonPanel(rpage, wxID_ANY, "Program");
 		rtoolbar = new wxRibbonToolBar(rpanel);
 		rtoolbar->AddTool(wxID_OK, Lite_Icon_icon, "Generate");
+		rtoolbar->AddTool(wxID_EXECUTE, Lite_Icon_icon, "Dump Graph Info");
 		//rtoolbar->SetRows(2, 3);
+
+		rpanel = new wxRibbonPanel(rpage, wxID_ANY, "Node");
+		wxChoice* choice = new wxChoice(rpanel, wxID_ANY, wxPoint(5, 5), wxSize(100, 20));
+		wxTextCtrl* text = new wxTextCtrl(rpanel, wxID_ANY, wxEmptyString, wxPoint(5, 30), wxSize(100, 20));
 	}
 	{
-		wxRibbonPage* rpage = new wxRibbonPage(mRibbon, -1, "Node");
-		wxRibbonPanel* rpanel = new wxRibbonPanel(rpage);
-		wxRibbonPanel* rpanel2 = new wxRibbonPanel(rpage);
+		wxRibbonPage* rpage = new wxRibbonPage(mRibbon, wxID_ANY, "About");
+		wxRibbonPanel* rpanel = new wxRibbonPanel(rpage, wxID_ANY, "About");
 	}
 	mRibbon->Realise();
 
@@ -89,8 +96,19 @@ void CMainFrame::CreateControls()
 
 	//Connect(wxEVT_PAINT, wxPaintEventHandler(CMainFrame::OnPaint));
 
+	//mOutput = new wxDialog(this, wxID_ANY, "Output");
+	//mLog = new wxTextCtrl(mOutput, wxID_ANY, wxEmptyString,
+	//	wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE |
+	//	wxTE_LEFT | wxTE_BESTWRAP | wxBORDER_NONE);
+
 	mFlowGraph = new CFlowGraph();
 	mFlowGraph->BindEditor(mFlowEditor);
+}
+
+void CMainFrame::OnClose(wxCloseEvent& evt)
+{
+	this->Destroy();
+	//mOutput->Destroy();
 }
 
 void CMainFrame::OnPaint(wxPaintEvent& evt)
@@ -111,7 +129,8 @@ void CMainFrame::OnAbout(wxCommandEvent& evt)
 	aboutInfo.SetCopyright("(C) 2014 Toby Chen");
 	aboutInfo.SetWebSite("http://www.ncchristian.org");
 	aboutInfo.AddDeveloper("Toby Chen");
-	aboutInfo.SetLicence(_("Source code is available in GPLv3\nhttps://github.com/cyj0912/EasyFlow"));
+	aboutInfo.SetLicence(wxT("Source code is available in GPLv3\n")
+		wxT("https://github.com/cyj0912/EasyFlow"));
 	wxAboutBox(aboutInfo);
 }
 
@@ -122,7 +141,13 @@ void CMainFrame::OnRibbonAbout(wxRibbonToolBarEvent& evt)
 
 void CMainFrame::OnRibbonTips(wxRibbonToolBarEvent& evt)
 {
-	mStatusbar->SetStatusText(_("Nothing yet..."));
+	mStatusbar->SetStatusText(wxT("Nothing yet..."));
+}
+
+void CMainFrame::OnRibbonDump(wxRibbonToolBarEvent& evt)
+{
+	const char* statusText = gEnv->FlowGraph->GetStatus();
+	wxMessageBox(statusText);
 }
 
 CFlowGraph* CMainFrame::GetFlowGraph()

@@ -5,6 +5,13 @@
 class NNode
 {
 public:
+	enum SIBLING_ID
+	{
+		NS_LEFT = 0,
+		NS_RIGHT,
+		NS_DOWN
+	};
+
 	NNode();
 	NNode(UNodeRegister* type);
 	~NNode();
@@ -15,9 +22,16 @@ public:
 	int GetY();
 	std::string& GetName();
 	UNodeRegister* GetType();
+
+	virtual NNode* GetSibling(int sib);
+	virtual void SetSibling(int sib, NNode* value);
+	virtual std::string GenerateCode();
+
 protected:
 	UNodeRegister* mType;
 	std::string mName;
 	int mX, mY;
+	NNode *mLeftSib, *mRightSib, *mDownSib;
+
 private:
 };
