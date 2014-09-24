@@ -22,11 +22,13 @@ bool NNode::Init(std::string& name)
 {
 	mName = name;
 
+	// User modifiable code
+	// Add properties
 	{
 		CNodeProperty prop;
 		prop.mOwner = this;
 		prop.mName = "TestProp";
-		prop.mType = "T"; // T:Text D:Dropdown Menu C:CheckBox
+		prop.mType = "T"; // T:Text (D:Dropdown Menu) C:CheckBox
 		prop.mValue = "";
 		mPropTable.push_back(prop);
 	}
@@ -35,8 +37,8 @@ bool NNode::Init(std::string& name)
 		CNodeProperty prop;
 		prop.mOwner = this;
 		prop.mName = "TP2";
-		prop.mType = "C"; // T:Text D:Dropdown Menu C:CheckBox
-		prop.mValue = "F";
+		prop.mType = "C"; // T:Text (D:Dropdown Menu) C:CheckBox
+		prop.mValue = "T"; // T: true F: false
 		mPropTable.push_back(prop);
 	}
 
@@ -57,6 +59,11 @@ int NNode::GetX()
 int NNode::GetY()
 {
 	return mY;
+}
+
+void NNode::SetName(const std::string& name)
+{
+	mName = name;
 }
 
 std::string& NNode::GetName()

@@ -30,6 +30,7 @@ public:
 	void SetPosition(int x, int y);
 	int GetX();
 	int GetY();
+	void SetName(const std::string& name);
 	std::string& GetName();
 	UNodeRegister* GetType();
 

@@ -23,6 +23,7 @@ public:
 	void OnRibbonAbout(wxRibbonToolBarEvent& evt);
 	void OnRibbonTips(wxRibbonToolBarEvent& evt);
 	void OnRibbonDump(wxRibbonToolBarEvent& evt);
+	void OnRibbonSaveProp(wxRibbonToolBarEvent& evt);
 
 	CFlowGraph* GetFlowGraph();
 	void PaintFlowEditor();

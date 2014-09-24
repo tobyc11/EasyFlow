@@ -89,6 +89,16 @@ const char* CFlowGraph::GetStatus()
 		}
 		sprintf_s(curr, "\n");
 		strcat_s(mStatusText, curr);
+
+		for (TPropTable::iterator iter2 = (*iter).second->mPropTable.begin();
+			iter2 != (*iter).second->mPropTable.end(); iter2++)
+		{
+			sprintf_s(curr, "%s ", (*iter2).mValue.c_str());
+			strcat_s(mStatusText, curr);
+		}
+
+		sprintf_s(curr, "\n");
+		strcat_s(mStatusText, curr);
 	}
 	return mStatusText;
 }

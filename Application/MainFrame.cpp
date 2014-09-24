@@ -19,6 +19,7 @@ BEGIN_EVENT_TABLE(CMainFrame, wxFrame)
 	EVT_RIBBONTOOLBAR_CLICKED(wxID_ABOUT, CMainFrame::OnRibbonAbout)
 	EVT_RIBBONTOOLBAR_CLICKED(wxID_HELP_INDEX, CMainFrame::OnRibbonTips)
 	EVT_RIBBONTOOLBAR_CLICKED(wxID_EXECUTE, CMainFrame::OnRibbonDump)
+	EVT_RIBBONTOOLBAR_CLICKED(wxID_SAVEAS, CMainFrame::OnRibbonSaveProp)
 END_EVENT_TABLE()
 
 CMainFrame::CMainFrame()
@@ -55,20 +56,31 @@ void CMainFrame::CreateControls()
 		wxRIBBON_BAR_DEFAULT_STYLE);
 	mRibbon->SetTabCtrlMargins(10, 20);
 	{
+		wxInitAllImageHandlers();
+		wxBitmap iconNew(wxString("New.png"), wxBITMAP_TYPE_PNG);
+		wxBitmap iconOpen(wxString("Open.png"), wxBITMAP_TYPE_PNG);
+		wxBitmap iconSave(wxString("Save.png"), wxBITMAP_TYPE_PNG);
+		wxBitmap iconAbout(wxString("About.png"), wxBITMAP_TYPE_PNG);
+		wxBitmap iconDump(wxString("Dump.png"), wxBITMAP_TYPE_PNG);
+		wxBitmap iconGen(wxString("Generate.png"), wxBITMAP_TYPE_PNG);
+		wxBitmap iconSaveProp(wxString("SaveProp.png"), wxBITMAP_TYPE_PNG);
+
 		wxRibbonPage* rpage = new wxRibbonPage(mRibbon, -1, "Common");
 		mPropertyPage = rpage;
 		wxRibbonPanel* rpanel = new wxRibbonPanel(rpage, wxID_ANY, "Common");
 		wxRibbonToolBar* rtoolbar = new wxRibbonToolBar(rpanel);
-		rtoolbar->AddTool(wxID_NEW, ICO_NEW, "New");
-		rtoolbar->AddTool(wxID_SAVE, ICO_SAVE, "Save");
-		rtoolbar->AddTool(wxID_HELP_INDEX, ICO_TIP, "Tips");
-		rtoolbar->AddTool(wxID_ABOUT, tip_xpm, "About");
+		rtoolbar->AddTool(wxID_NEW, iconNew, "New");
+		rtoolbar->AddTool(wxID_OPEN, iconOpen, "Open");
+		rtoolbar->AddTool(wxID_SAVE, iconSave, "Save");
+		rtoolbar->AddTool(wxID_ABOUT, iconAbout, "About");
 		//rtoolbar->SetRows(2, 2);
+
 
 		rpanel = new wxRibbonPanel(rpage, wxID_ANY, "Program");
 		rtoolbar = new wxRibbonToolBar(rpanel);
-		rtoolbar->AddTool(wxID_OK, Lite_Icon_icon, "Generate");
-		rtoolbar->AddTool(wxID_EXECUTE, Lite_Icon_icon, "Dump Graph Info");
+		rtoolbar->AddTool(wxID_OK, iconGen, "Generate");
+		rtoolbar->AddTool(wxID_EXECUTE, iconDump, "Dump Graph Info");
+		rtoolbar->AddTool(wxID_SAVEAS, iconSaveProp, "Save Properties");
 		//rtoolbar->SetRows(2, 3);
 	}
 	{
@@ -148,6 +160,11 @@ void CMainFrame::OnRibbonDump(wxRibbonToolBarEvent& evt)
 {
 	const char* statusText = gEnv->FlowGraph->GetStatus();
 	wxMessageBox(statusText);
+}
+
+void CMainFrame::OnRibbonSaveProp(wxRibbonToolBarEvent& evt)
+{
+	gEnv->PropCtrl->UpdateTarget();
 }
 
 CFlowGraph* CMainFrame::GetFlowGraph()
