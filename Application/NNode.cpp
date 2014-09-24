@@ -27,21 +27,11 @@ bool NNode::Init(std::string& name)
 	{
 		CNodeProperty prop;
 		prop.mOwner = this;
-		prop.mName = "TestProp";
-		prop.mType = "T"; // T:Text (D:Dropdown Menu) C:CheckBox
-		prop.mValue = "";
-		mPropTable.push_back(prop);
-	}
-
-	{
-		CNodeProperty prop;
-		prop.mOwner = this;
-		prop.mName = "TP2";
+		prop.mName = "Enable";
 		prop.mType = "C"; // T:Text (D:Dropdown Menu) C:CheckBox
 		prop.mValue = "T"; // T: true F: false
 		mPropTable.push_back(prop);
 	}
-
 	return true;
 }
 

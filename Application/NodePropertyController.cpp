@@ -7,7 +7,6 @@ CNodePropertyController::CNodePropertyController()
 	gEnv->PropCtrl = this;
 	mTargetNode = 0;
 	mOutdated = true;
-	DestroyUI();
 }
 
 CNodePropertyController::~CNodePropertyController()

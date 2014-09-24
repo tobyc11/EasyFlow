@@ -95,5 +95,6 @@ const char* CFlowGraph::GetStatus()
 
 const char* CFlowGraph::GenerateCode()
 {
+
 	return 0;
 }
