@@ -21,7 +21,7 @@ public:
 	void OnQuit(wxCommandEvent& evt);
 	void OnAbout(wxCommandEvent& evt);
 	void OnRibbonAbout(wxRibbonToolBarEvent& evt);
-	void OnRibbonTips(wxRibbonToolBarEvent& evt);
+	void OnRibbonGenerate(wxRibbonToolBarEvent& evt);
 	void OnRibbonDump(wxRibbonToolBarEvent& evt);
 	void OnRibbonSaveProp(wxRibbonToolBarEvent& evt);
 

@@ -17,9 +17,9 @@ BEGIN_EVENT_TABLE(CMainFrame, wxFrame)
 	EVT_MENU(wxID_EXIT, CMainFrame::OnQuit)
 	EVT_MENU(wxID_ABOUT, CMainFrame::OnAbout)
 	EVT_RIBBONTOOLBAR_CLICKED(wxID_ABOUT, CMainFrame::OnRibbonAbout)
-	EVT_RIBBONTOOLBAR_CLICKED(wxID_HELP_INDEX, CMainFrame::OnRibbonTips)
 	EVT_RIBBONTOOLBAR_CLICKED(wxID_EXECUTE, CMainFrame::OnRibbonDump)
 	EVT_RIBBONTOOLBAR_CLICKED(wxID_SAVEAS, CMainFrame::OnRibbonSaveProp)
+	EVT_RIBBONTOOLBAR_CLICKED(wxID_OK, CMainFrame::OnRibbonGenerate)
 END_EVENT_TABLE()
 
 CMainFrame::CMainFrame()
@@ -113,7 +113,6 @@ void CMainFrame::CreateControls()
 	//	wxTE_LEFT | wxTE_BESTWRAP | wxBORDER_NONE);
 
 	mFlowGraph = new CFlowGraph();
-	mFlowGraph->BindEditor(mFlowEditor);
 	new CNodePropertyController;
 }
 
@@ -151,9 +150,10 @@ void CMainFrame::OnRibbonAbout(wxRibbonToolBarEvent& evt)
 	OnAbout(static_cast<wxCommandEvent>(0));
 }
 
-void CMainFrame::OnRibbonTips(wxRibbonToolBarEvent& evt)
+void CMainFrame::OnRibbonGenerate(wxRibbonToolBarEvent& evt)
 {
-	mStatusbar->SetStatusText(wxT("Nothing yet..."));
+	const char* statusText = gEnv->FlowGraph->GenerateCode();
+	wxMessageBox(statusText);
 }
 
 void CMainFrame::OnRibbonDump(wxRibbonToolBarEvent& evt)

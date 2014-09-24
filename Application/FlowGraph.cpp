@@ -16,16 +16,6 @@ CFlowGraph::~CFlowGraph()
 
 }
 
-void CFlowGraph::BindEditor(CFlowEditor* ed)
-{
-	mEditor = ed;
-}
-
-CFlowEditor* CFlowGraph::GetEditor()
-{
-	return mEditor;
-}
-
 NNode * CFlowGraph::StartSpawnNode(int id)
 {
 	if (mSpawningNode)
