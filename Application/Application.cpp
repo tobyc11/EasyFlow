@@ -1,4 +1,4 @@
-#include <Main/Common.h>
+#include "Common.h"
 #include "Application.h"
 #include "MainFrame.h"
 

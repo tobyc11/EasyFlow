@@ -1,16 +1,10 @@
-#include <Main\Common.h>
+#include "Common.h"
 #include "MainFrame.h"
 #include "ToolBox.h"
 #include "FlowEditor.h"
 #include "FlowGraph.h"
-#include "NodePropertyController.h"
+#include "NodePropertyUI.h"
 #include <wx/aboutdlg.h>
-// #include <dwmapi.h>
-#include <Main\XPM\ico.xpm>
-#include <Main\XPM\ICO_NEW.xpm>
-#include <Main\XPM\ICO_SAVE.xpm>
-#include <Main\XPM\ICO_TIP.xpm>
-#include <Main\XPM\Lite-Icon-icon.xpm>
 
 BEGIN_EVENT_TABLE(CMainFrame, wxFrame)
 	EVT_CLOSE(CMainFrame::OnClose)
@@ -25,9 +19,10 @@ END_EVENT_TABLE()
 CMainFrame::CMainFrame()
 	: wxFrame(NULL, wxID_ANY, "myFlow", wxDefaultPosition, wxDefaultSize)
 {
+	wxInitAllImageHandlers();
 	gEnv->MainFrame = this;
 	mPropertyPanel = 0;
-	SetIcon(wxIcon(tip_xpm));
+	SetIcon(wxIcon(wxString("App.png"), wxBITMAP_TYPE_PNG));
 	Maximize(true);
 	CreateControls();
 }
@@ -56,7 +51,6 @@ void CMainFrame::CreateControls()
 		wxRIBBON_BAR_DEFAULT_STYLE);
 	mRibbon->SetTabCtrlMargins(10, 20);
 	{
-		wxInitAllImageHandlers();
 		wxBitmap iconNew(wxString("New.png"), wxBITMAP_TYPE_PNG);
 		wxBitmap iconOpen(wxString("Open.png"), wxBITMAP_TYPE_PNG);
 		wxBitmap iconSave(wxString("Save.png"), wxBITMAP_TYPE_PNG);
@@ -113,7 +107,7 @@ void CMainFrame::CreateControls()
 	//	wxTE_LEFT | wxTE_BESTWRAP | wxBORDER_NONE);
 
 	mFlowGraph = new CFlowGraph();
-	new CNodePropertyController;
+	new CNodePropertyUI;
 }
 
 void CMainFrame::OnClose(wxCloseEvent& evt)

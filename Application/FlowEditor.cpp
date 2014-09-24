@@ -1,10 +1,10 @@
-#include <Main\Common.h>
+#include "Common.h"
 #include "FlowEditor.h"
 #include "FlowGraph.h"
 #include "MainFrame.h"
 #include "NNode.h"
 #include "FlowNodeRenderProxy.h"
-#include "NodePropertyController.h"
+#include "NodePropertyUI.h"
 
 BEGIN_EVENT_TABLE(CFlowEditor, wxPanel)
 	EVT_PAINT(CFlowEditor::OnPaint)

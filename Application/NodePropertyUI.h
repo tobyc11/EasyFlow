@@ -1,25 +1,16 @@
 #pragma once
 #include "wx/wx.h"
-#include <string>
+#include "NodePropertyAccessor.h"
 #include <vector>
-#include "NNode.h"
 
-class CNodePropertyController
+class CNodePropertyUI : public CNodePropertyAccessor
 {
 public:
-
-	CNodePropertyController();
-	~CNodePropertyController();
-
-	void SetTargetNode(NNode* node);
-	NNode* GetTargetNode() { return mTargetNode; }
-	bool GetOutdated() { return mOutdated; }
+	CNodePropertyUI();
+	~CNodePropertyUI();
 
 	void UpdatePropertiesFromTarget();
 	bool UpdateTarget();
-	TPropTable& GetAvailableProps();
-	std::string& GetPropertyValue(const std::string& name);
-	bool SetPropertyValue(const std::string& name, const std::string& value);
 
 	// Helpers for GUI (Creating ribbon elements to edit props)
 	void CreateUI();
@@ -33,12 +24,6 @@ public:
 private:
 	typedef std::pair<std::string, void*> TControlPair;
 	typedef std::vector<TControlPair> TControlList;
-
-	void SetOutdated(bool value) { mOutdated = value; }
-
-	bool mOutdated;
-	NNode* mTargetNode;
-
 	wxSizer* mPropPanelSizer;
 	wxTextCtrl* mNameCtrl;
 	TControlList mCtrlList;

@@ -1,4 +1,4 @@
-#include <Main\Common.h>
+#include "Common.h"
 #include "FlowGraph.h"
 #include "NInterface.h"
 #include "NNode.h"

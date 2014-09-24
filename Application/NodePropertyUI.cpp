@@ -1,35 +1,24 @@
-#include <Main/Common.h>
-#include "NodePropertyController.h"
+#include "Common.h"
+#include "NodePropertyUI.h"
 #include "MainFrame.h"
 
-CNodePropertyController::CNodePropertyController()
+CNodePropertyUI::CNodePropertyUI()
 {
 	gEnv->PropCtrl = this;
 	mTargetNode = 0;
-	mOutdated = true;
 }
 
-CNodePropertyController::~CNodePropertyController()
+CNodePropertyUI::~CNodePropertyUI()
 {
 
 }
 
-void CNodePropertyController::SetTargetNode(NNode* node)
+void CNodePropertyUI::UpdatePropertiesFromTarget()
 {
-	mTargetNode = node;
-	mOutdated = true;
-}
-
-void CNodePropertyController::UpdatePropertiesFromTarget()
-{
-	// You are losing all the changes!!!
-
-	// if( mHasUI )
 	CreateUI();
-	mOutdated = false;
 }
 
-bool CNodePropertyController::UpdateTarget()
+bool CNodePropertyUI::UpdateTarget()
 {
 	if (mTargetNode)
 	{
@@ -64,52 +53,8 @@ bool CNodePropertyController::UpdateTarget()
 	return false;
 }
 
-TPropTable& CNodePropertyController::GetAvailableProps()
-{
-	if (mTargetNode)
-	{
-		return mTargetNode->mPropTable;
-	}
-	assert(1); // BUG!!!
-	return mTargetNode->mPropTable;
-}
-
-std::string& CNodePropertyController::GetPropertyValue(const std::string& name)
-{
-	if (mTargetNode)
-	{
-		for (TPropTable::iterator iter = mTargetNode->mPropTable.begin();
-			iter != mTargetNode->mPropTable.end(); iter++)
-		{
-			if (name == (*iter).mName)
-			{
-				return (*iter).mValue;
-			}
-		}
-	}
-	assert(1); // BUUUUGGGGG!!!
-	return const_cast<std::string&>(name);
-}
-
-bool CNodePropertyController::SetPropertyValue(const std::string& name, const std::string& value)
-{
-	if (mTargetNode)
-	{
-		for (TPropTable::iterator iter = mTargetNode->mPropTable.begin();
-			iter != mTargetNode->mPropTable.end(); iter++)
-		{
-			if (name == (*iter).mName)
-			{
-				(*iter).mValue = value;
-				return true;
-			}
-		}
-	}
-	return false;
-}
-
 // Helpers for GUI (Creating ribbon elements to edit props)
-void CNodePropertyController::CreateUI()
+void CNodePropertyUI::CreateUI()
 {
 	// mHasUI = true;
 	DestroyUI();
@@ -155,7 +100,7 @@ void CNodePropertyController::CreateUI()
 	gEnv->MainFrame->mPropertyPage->Realize();
 }
 
-wxTextCtrl* CNodePropertyController::CreateText(const std::string& name)
+wxTextCtrl* CNodePropertyUI::CreateText(const std::string& name)
 {
 	CreateUIPanel();
 	wxRibbonPanel* panel = gEnv->MainFrame->mPropertyPanel;
@@ -168,7 +113,7 @@ wxTextCtrl* CNodePropertyController::CreateText(const std::string& name)
 	return control;
 }
 
-wxChoice* CNodePropertyController::CreateChoice(const std::string& name)
+wxChoice* CNodePropertyUI::CreateChoice(const std::string& name)
 {
 	CreateUIPanel();
 	wxRibbonPanel* panel = gEnv->MainFrame->mPropertyPanel;
@@ -181,7 +126,7 @@ wxChoice* CNodePropertyController::CreateChoice(const std::string& name)
 	return control;
 }
 
-wxCheckBox* CNodePropertyController::CreateCheckBox(const std::string& name, bool default_value)
+wxCheckBox* CNodePropertyUI::CreateCheckBox(const std::string& name, bool default_value)
 {
 	CreateUIPanel();
 	wxRibbonPanel* panel = gEnv->MainFrame->mPropertyPanel;
@@ -190,7 +135,7 @@ wxCheckBox* CNodePropertyController::CreateCheckBox(const std::string& name, boo
 	return control;
 }
 
-void CNodePropertyController::CreateUIPanel()
+void CNodePropertyUI::CreateUIPanel()
 {
 	if (!gEnv->MainFrame->mPropertyPanel)
 	{
@@ -203,7 +148,7 @@ void CNodePropertyController::CreateUIPanel()
 	}
 }
 
-void CNodePropertyController::DestroyUI()
+void CNodePropertyUI::DestroyUI()
 {
 	if (gEnv->MainFrame->mPropertyPanel)
 	{
@@ -212,7 +157,7 @@ void CNodePropertyController::DestroyUI()
 	}
 }
 
-void* CNodePropertyController::FindInControlList(const std::string& propname)
+void* CNodePropertyUI::FindInControlList(const std::string& propname)
 {
 	for (TControlList::iterator iter = mCtrlList.begin();
 		iter != mCtrlList.end(); iter++)
@@ -222,3 +167,4 @@ void* CNodePropertyController::FindInControlList(const std::string& propname)
 	}
 	return 0;
 }
+

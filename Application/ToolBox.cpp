@@ -1,4 +1,4 @@
-#include <Main/Common.h>
+#include "Common.h"
 #include "ToolBox.h"
 #include "MainFrame.h"
 #include "FlowGraph.h"
@@ -37,7 +37,7 @@ void CToolBox::CreateControls()
 	while (currReg != 0)
 	{
 		mNodes[mNodeCount] = new wxCommandLinkButton(this, currReg->mID, currReg->mName, currReg->mDesc);
-		sizer->Add(mNodes[mNodeCount], 0);
+		sizer->Add(mNodes[mNodeCount]);
 		currReg = currReg->mNext;
 		mNodeCount++;
 	}
