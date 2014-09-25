@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 project(EasyFlow)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/Distribution CACHE PATH "Build directory" FORCE)
 add_subdirectory(ThirdParty)
 add_subdirectory(ThirdPartyD)
 add_subdirectory(Application)
