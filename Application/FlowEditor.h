@@ -98,4 +98,6 @@ struct SWire
 		wxPoint tow = ed->WorldToWindow(toPos);
 		dc.DrawLine(frw, tow);
 	}
+
+	void UpdatePosition();
 };

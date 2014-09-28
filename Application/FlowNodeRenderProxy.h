@@ -53,6 +53,7 @@ public:
 
 	void ProcessEvents(SRenderEvtParams params);
 	int DeterminePart(int x, int y);
+	wxPoint GetSocketCenter(int NNodeSocket);
 
 private:
 	enum EParts

@@ -219,13 +219,13 @@ MOUSE_OVER:
 int CFlowNodeRenderProxy::DeterminePart(int x, int y)
 {
 	wxPoint worldPos = mParent->WindowToWorld(wxPoint(x, y));
-	wxPoint testc(mNode->GetX(), mNode->GetY() + 38);
+	wxPoint testc(GetSocketCenter(NNode::NS_LEFT));
 	if (worldPos.x >= testc.x - 10 && worldPos.x <= testc.x + 10
 		&& worldPos.y >= testc.y - 10 && worldPos.y <= testc.y + 10)
 	{
 		return PART_S_LEFT;
 	}
-	testc = wxPoint(mNode->GetX() + 100, mNode->GetY() + 38);
+	testc = GetSocketCenter(NNode::NS_RIGHT);
 	if (worldPos.x >= testc.x - 10 && worldPos.x <= testc.x + 10
 		&& worldPos.y >= testc.y - 10 && worldPos.y <= testc.y + 10)
 	{
@@ -234,4 +234,23 @@ int CFlowNodeRenderProxy::DeterminePart(int x, int y)
 	if (PointInside(x, y))
 		return PART_BODY;
 	return PART_UNKNOWN;
+}
+
+wxPoint CFlowNodeRenderProxy::GetSocketCenter(int NNodeSocket)
+{
+	switch (NNodeSocket)
+	{
+	case NNode::NS_LEFT:
+		return wxPoint(mNode->GetX(), mNode->GetY() + 38);
+		break;
+	case NNode::NS_RIGHT:
+		return wxPoint(mNode->GetX() + 100, mNode->GetY() + 38);
+		break;
+	case NNode::NS_DOWN:
+		return wxPoint(mNode->GetX() + 50, mNode->GetY() + 100);
+		break;
+	default:
+		break;
+	}
+	return wxPoint(0, 0);
 }

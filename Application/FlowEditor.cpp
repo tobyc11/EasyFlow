@@ -108,6 +108,7 @@ void CFlowEditor::OnMouseMove(wxMouseEvent& evt)
 		Render(dc);
 	}
 
+	// Dragging Node
 	if (!mDragging)
 	{
 		if (mGrabbedNode)
@@ -118,6 +119,17 @@ void CFlowEditor::OnMouseMove(wxMouseEvent& evt)
 			mGrabbedNode->GetNNode()->SetPosition(orgWorldX + wp.x - mGrabWorldOrigin.x,
 				orgWorldY + wp.y - mGrabWorldOrigin.y);
 			Grab(mGrabbedNode, evt.GetX(), evt.GetY());
+			// Fix corresponding wires
+			for (TWireList::iterator iter = mWires.begin();
+				iter != mWires.end();
+				iter++)
+			{
+				if ((*iter)->from == mGrabbedNode || (*iter)->to == mGrabbedNode)
+				{
+					(*iter)->UpdatePosition();
+				}
+			}
+			// Repaint
 			gEnv->MainFrame->PaintFlowEditor();
 		}
 	}
@@ -359,4 +371,12 @@ void CFlowEditor::Grab(CFlowNodeRenderProxy* target, int wndX, int wndY)
 void CFlowEditor::StopGrabbing()
 {
 	mGrabbedNode = 0;
+}
+
+
+// Implementations for SWire
+void SWire::UpdatePosition()
+{
+	this->frPos = this->from->GetSocketCenter(this->frSkt);
+	this->toPos = this->to->GetSocketCenter(this->toSkt);
 }
