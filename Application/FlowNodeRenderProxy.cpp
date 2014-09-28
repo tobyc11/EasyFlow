@@ -126,6 +126,9 @@ LEFT_DOWN:
 		tWire->frSkt = NNode::NS_RIGHT;
 		tWire->toPos = wxPoint(0, 0);
 		break;
+	case PART_BODY:
+		mParent->Grab(this, params.x, params.y);
+		break;
 	default:
 		break;
 	}
@@ -146,6 +149,9 @@ LEFT_UP:
 		}
 		break;
 	case PART_S_RIGHT:
+		break;
+	case PART_BODY:
+		mParent->StopGrabbing();
 		break;
 	default:
 		break;

@@ -48,6 +48,7 @@ CFlowEditor::CFlowEditor(wxWindow *parent, wxWindowID winid)
 	mOX = mOY = 0;
 	mDragging = false;
 	mCurrWire = 0;
+	mGrabbedNode = 0;
 	//mRenderLock = 0;
 }
 
@@ -107,6 +108,19 @@ void CFlowEditor::OnMouseMove(wxMouseEvent& evt)
 		Render(dc);
 	}
 
+	if (!mDragging)
+	{
+		if (mGrabbedNode)
+		{
+			wxPoint wp = WindowToWorld(wxPoint(evt.GetX(), evt.GetY()));
+			int orgWorldX = mGrabbedNode->GetNNode()->GetX();
+			int orgWorldY = mGrabbedNode->GetNNode()->GetY();
+			mGrabbedNode->GetNNode()->SetPosition(orgWorldX + wp.x - mGrabWorldOrigin.x,
+				orgWorldY + wp.y - mGrabWorldOrigin.y);
+			Grab(mGrabbedNode, evt.GetX(), evt.GetY());
+			gEnv->MainFrame->PaintFlowEditor();
+		}
+	}
 	GETMF();
 	CFlowGraph* fg = mf->GetFlowGraph();
 	NNode* sn = fg->GetSpawningNode();
@@ -121,7 +135,7 @@ void CFlowEditor::OnMouseMove(wxMouseEvent& evt)
 	}
 }
 
-// Process event when left mouse buttton is pressed
+// Process event when left mouse button is pressed
 void CFlowEditor::OnLeftDown(wxMouseEvent& evt)
 {
 	GETMF();
@@ -334,4 +348,15 @@ void CFlowEditor::FinishTempWire()
 SWire* CFlowEditor::GetTempWire()
 {
 	return mCurrWire;
+}
+
+void CFlowEditor::Grab(CFlowNodeRenderProxy* target, int wndX, int wndY)
+{
+	mGrabbedNode = target;
+	mGrabWorldOrigin = WindowToWorld(wxPoint(wndX, wndY));
+}
+
+void CFlowEditor::StopGrabbing()
+{
+	mGrabbedNode = 0;
 }

@@ -51,9 +51,14 @@ public:
 	void FinishTempWire(); // Caution: May cause memory leak
 	SWire* GetTempWire();
 
+	void Grab(CFlowNodeRenderProxy* target, int wndX, int wndY);
+	void StopGrabbing();
+
 private:
 	typedef std::list<CFlowNodeRenderProxy*> TFlowNodeNPList;
 	typedef std::list<SWire*> TWireList;
+
+	// Support dragging scene
 	int mMX, mMY;
 	int mOX, mOY;
 	int mDragOX, mDragOY, mSaveDragOX, mSaveDragOY;
@@ -61,8 +66,14 @@ private:
 	wxPoint mOrigin;
 	wxString mCurrStr;
 	TFlowNodeNPList mNodeProxy;
+
+	//
 	TWireList mWires;
 	SWire* mCurrWire;
+
+	// Support moving nodes
+	wxPoint mGrabWorldOrigin;
+	CFlowNodeRenderProxy* mGrabbedNode;
 	DECLARE_EVENT_TABLE();
 };
 
