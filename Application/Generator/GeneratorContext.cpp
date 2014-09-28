@@ -23,7 +23,12 @@ Author: Toby Chen @ 2014
 
 CMainTask::CMainTask()
 {
-
+	mCodeBuffer =
+		"\n"
+		"task main()\n"
+		"{\n"
+		"	while (true)\n"
+		"	{\n";
 }
 
 CMainTask::~CMainTask()
@@ -33,11 +38,16 @@ CMainTask::~CMainTask()
 
 void CMainTask::AddEventListener(CFunction* funcListener)
 {
-
+	mCodeBuffer += "		";
+	mCodeBuffer += funcListener->GetName();
+	mCodeBuffer += "();\n";
 }
 
 const char* CMainTask::ReturnCode()
 {
+	mCodeBuffer +=
+		"	}\n"
+		"}\n";
 	return mCodeBuffer.c_str();
 }
 
@@ -103,6 +113,7 @@ const char* CGeneratorContext::ReturnCode()
 	}
 
 	// Generate main task
+	mCodeBuffer += mMainTask->ReturnCode();
 
 	return mCodeBuffer.c_str();
 }

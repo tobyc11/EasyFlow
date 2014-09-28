@@ -29,9 +29,9 @@ public:
 	~CFunction();
 
 	void SetName(const char*);
-	const char* GetName() {	mName.c_str(); }
+	inline const char* GetName() {	return mName.c_str(); }
 	void SetReturnType(const char*);
-	const char* GetReturnType() { mReturnType.c_str(); }
+	inline const char* GetReturnType() { return mReturnType.c_str(); }
 
 	ULinkedString* AllocContent(ULinkedString* prev = 0, ULinkedString* next = 0);
 	void DeleteContent(ULinkedString* pContent);

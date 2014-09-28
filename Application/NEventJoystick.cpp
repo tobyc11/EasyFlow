@@ -47,6 +47,7 @@ void NEventJoystick::GenerateCode()
 	// NEvent::GenerateCode();
 	std::string fName = std::string("Listener_") + this->mName;
 	CFunction* eventFunc = gEnv->GeneratorContext->AddFunction(fName.c_str());
+	gEnv->GeneratorContext->GetMainTask()->AddEventListener(eventFunc);
 	eventFunc->SetReturnType("void");
 	ULinkedString* insideFunction = eventFunc->GenerateStub();
 
