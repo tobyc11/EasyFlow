@@ -94,6 +94,11 @@ const char* CFlowGraph::GetStatus()
 			sprintf_s(curr, "RIGHT: %s ", sibTest->GetName().c_str());
 			strcat_s(mStatusText, curr);
 		}
+		if (sibTest = (*iter).second->GetSibling(NNode::NS_RIGHT2))
+		{
+			sprintf_s(curr, "RIGHT2: %s ", sibTest->GetName().c_str());
+			strcat_s(mStatusText, curr);
+		}
 		if (sibTest = (*iter).second->GetSibling(NNode::NS_DOWN))
 		{
 			sprintf_s(curr, "DOWN: %s ", sibTest->GetName().c_str());

@@ -33,7 +33,7 @@ REGISTER_NODE(NNode, "DO NOT USE!!!!!");
 NNode::NNode(UNodeRegister* type)
 {
 	mType = type;
-	mLeftSib = mRightSib = mDownSib = 0;
+	mLeftSib = mRightSib = mRight2Sib = mDownSib = 0;
 }
 
 NNode::~NNode()
@@ -99,6 +99,8 @@ NNode* NNode::GetSibling(int sib)
 		return mRightSib;
 	case NS_DOWN:
 		return mDownSib;
+	case NS_RIGHT2:
+		return mRight2Sib;
 	default:
 		return 0;
 	}
@@ -116,6 +118,9 @@ void NNode::SetSibling(int sib, NNode* value)
 		break;
 	case NS_DOWN:
 		mDownSib = value;
+		break;
+	case NS_RIGHT2:
+		mRight2Sib = value;
 		break;
 	default:
 		break;

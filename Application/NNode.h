@@ -42,7 +42,8 @@ public:
 	{
 		NS_LEFT = 0,
 		NS_RIGHT,
-		NS_DOWN
+		NS_DOWN,
+		NS_RIGHT2
 	};
 
 	NNode(UNodeRegister* type);
@@ -67,7 +68,7 @@ protected:
 	UNodeRegister* mType;
 	std::string mName;
 	int mX, mY;
-	NNode *mLeftSib, *mRightSib, *mDownSib;
+	NNode *mLeftSib, *mRightSib, *mDownSib, *mRight2Sib;
 
 #define INDENT_INDEX 16
 	static const char* sIndent;

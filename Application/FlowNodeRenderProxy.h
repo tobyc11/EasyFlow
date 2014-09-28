@@ -63,14 +63,17 @@ private:
 		PART_S_RIGHT,
 		PART_S_DOWN,
 		PART_TITLE,
-		PART_BODY
+		PART_BODY,
+		PART_S_RIGHT2
 	};
 
 	CFlowEditor* mParent;
 	NNode* mNode;
 
 	bool mHighlightLeft;
-	bool mHighlightRight;
+	bool mHighlightRight, mHighlightRight2;
 	bool mHighlightAll;
 	wxPoint mMouseWndPos;
+
+	bool mHasLeft, mHasRight, mHasRight2;
 };

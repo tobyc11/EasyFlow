@@ -20,6 +20,7 @@ Author: Toby Chen @ 2014
 #include "FlowNodeRenderProxy.h"
 #include "NNode.h"
 #include "FlowEditor.h"
+#include "NodePropertyAccessor.h"
 
 CFlowNodeRenderProxy::CFlowNodeRenderProxy()
 {
@@ -33,6 +34,23 @@ CFlowNodeRenderProxy::CFlowNodeRenderProxy(CFlowEditor* parent, NNode* node)
 	mHighlightLeft = false;
 	mHighlightRight = false;
 	mHighlightAll = false;
+	mHighlightRight2 = false;
+
+	CNodePropertyAccessor propAcc;
+	propAcc.SetTargetNode(node);
+	std::string& cflag = propAcc.GetPropertyValue("CFlag");
+	if (cflag != "E")
+		mHasLeft = true;
+	else
+		mHasLeft = false;
+
+	std::string& rflag = propAcc.GetPropertyValue("RFlag");
+	if (rflag == "RR")
+		mHasRight2 = true;
+	else
+		mHasRight2 = false;
+
+	mHasRight = true;
 }
 
 CFlowNodeRenderProxy::~CFlowNodeRenderProxy()
@@ -66,18 +84,34 @@ void CFlowNodeRenderProxy::Render(wxDC& dc)
 	dc.DrawLine(mNode->GetX() - origin.x, mNode->GetY() + 28 - origin.y,
 		mNode->GetX() + 100 - origin.x, mNode->GetY() + 28 - origin.y);
 
+	dc.SetBrush(wxBrush(wxColor(128, 240, 200)));
 	// Draw left socket
-	dc.SetBrush(wxBrush(wxColor(128, 240, 200)));
-	SetHighlightPen(dc, mHighlightLeft || mHighlightAll);
-	dc.DrawCircle(mParent->WorldToWindow(
-		wxPoint(mNode->GetX(), mNode->GetY() + 38)), 10);
-	dc.SetBrush(wxBrush(wxColor(128, 240, 200)));
+	if (mHasLeft)
+	{
+		SetHighlightPen(dc, mHighlightLeft || mHighlightAll);
+		dc.DrawCircle(mParent->WorldToWindow(
+			wxPoint(mNode->GetX(), mNode->GetY() + 38)), 10);
+		dc.SetPen(wxPen(wxColor(0, 0, 0), 1));
+	}
 
 	// Draw right socket
-	SetHighlightPen(dc, mHighlightRight || mHighlightAll);
-	dc.DrawCircle(mParent->WorldToWindow(
-		wxPoint(mNode->GetX() + 100, mNode->GetY() + 38)), 10);
-	dc.SetPen(wxPen(wxColor(0, 0, 0), 1));
+	if (mHasRight)
+	{
+		SetHighlightPen(dc, mHighlightRight || mHighlightAll);
+		dc.DrawCircle(mParent->WorldToWindow(
+			wxPoint(mNode->GetX() + 100, mNode->GetY() + 38)), 10);
+		dc.SetPen(wxPen(wxColor(0, 0, 0), 1));
+	}
+
+	// Draw right socket 2 if present
+	if (mHasRight2)
+	{
+		SetHighlightPen(dc, mHighlightRight2 || mHighlightAll);
+		dc.DrawCircle(mParent->WorldToWindow(
+			GetSocketCenter(NNode::NS_RIGHT2)), 10);
+		dc.SetPen(wxPen(wxColor(0, 0, 0), 1));
+	}
+
 }
 
 void CFlowNodeRenderProxy::SetHighlightPen(wxDC& dc, bool hi)
@@ -121,11 +155,13 @@ LEFT_DOWN:
 	switch (DeterminePart(params.x, params.y))
 	{
 	case PART_S_LEFT:
+		if (!mHasLeft)
+			break;
 		if (existWire = mParent->FindWire(this, NNode::NS_LEFT))
 		{
 			theOtherNode = existWire->to == this ? existWire->from : existWire->to;
 			tWire = mParent->SpawnTempWire(theOtherNode);
-			tWire->frSkt = NNode::NS_RIGHT;
+			tWire->frSkt = existWire->to == this ? existWire->frSkt : existWire->toSkt;
 			tWire->UpdatePosition();
 			mParent->EraseWire(existWire);
 		}
@@ -135,6 +171,14 @@ LEFT_DOWN:
 		tWire->frPos = wxPoint(mNode->GetX() + 100, mNode->GetY() + 38);
 		tWire->frSkt = NNode::NS_RIGHT;
 		tWire->toPos = wxPoint(0, 0);
+		break;
+	case PART_S_RIGHT2:
+		if (mHasRight2)
+		{
+			tWire = mParent->SpawnTempWire(this);
+			tWire->frSkt = NNode::NS_RIGHT2;
+			tWire->UpdatePosition();
+		}
 		break;
 	case PART_BODY:
 		mParent->Grab(this, params.x, params.y);
@@ -148,6 +192,8 @@ LEFT_UP:
 	switch (DeterminePart(params.x, params.y))
 	{
 	case PART_S_LEFT:
+		if (!mHasLeft)
+			break;
 		if (tWire = mParent->GetTempWire())
 		{
 			tWire->to = this;
@@ -159,14 +205,6 @@ LEFT_UP:
 		}
 		break;
 	case PART_S_RIGHT:
-		if (tWire = mParent->GetTempWire())
-		{
-			tWire->to = this;
-			tWire->toSkt = NNode::NS_LEFT;
-			tWire->UpdatePosition();
-			mParent->FinishTempWire();
-			mParent->Render(wxClientDC(mParent));
-		}
 		break;
 	case PART_BODY:
 		mParent->StopGrabbing();
@@ -212,6 +250,22 @@ MOUSE_OVER:
 		else
 			mHighlightAll = false;
 		break;
+	case PART_S_RIGHT2:
+		if (!mHighlightRight2)
+		{
+			mHighlightRight2 = true;
+			mParent->Render(wxClientDC(mParent));
+		}
+		else
+			mHighlightRight2 = true;
+		if (mHighlightAll)
+		{
+			mHighlightAll = false;
+			mParent->Render(wxClientDC(mParent));
+		}
+		else
+			mHighlightAll = false;
+		break;
 	case PART_BODY:
 		if (!mHighlightAll)
 		{
@@ -222,13 +276,13 @@ MOUSE_OVER:
 			mHighlightAll = true;
 		break;
 	default:
-		if (mHighlightRight || mHighlightLeft || mHighlightAll)
+		if (mHighlightRight || mHighlightLeft || mHighlightRight2 || mHighlightAll)
 		{
-			mHighlightLeft = mHighlightRight = mHighlightAll = false;
+			mHighlightLeft = mHighlightRight = mHighlightRight2 = mHighlightAll = false;
 			mParent->Render(wxClientDC(mParent));
 		}
 		else
-			mHighlightLeft = mHighlightRight = mHighlightAll = false;
+			mHighlightLeft = mHighlightRight = mHighlightRight2 = mHighlightAll = false;
 		break;
 	}
 	return;
@@ -249,6 +303,12 @@ int CFlowNodeRenderProxy::DeterminePart(int x, int y)
 	{
 		return PART_S_RIGHT;
 	}
+	testc = GetSocketCenter(NNode::NS_RIGHT2);
+	if (worldPos.x >= testc.x - 10 && worldPos.x <= testc.x + 10
+		&& worldPos.y >= testc.y - 10 && worldPos.y <= testc.y + 10)
+	{
+		return PART_S_RIGHT2;
+	}
 	if (PointInside(x, y))
 		return PART_BODY;
 	return PART_UNKNOWN;
@@ -263,6 +323,9 @@ wxPoint CFlowNodeRenderProxy::GetSocketCenter(int NNodeSocket)
 		break;
 	case NNode::NS_RIGHT:
 		return wxPoint(mNode->GetX() + 100, mNode->GetY() + 38);
+		break;
+	case NNode::NS_RIGHT2:
+		return wxPoint(mNode->GetX() + 100, mNode->GetY() + 58);
 		break;
 	case NNode::NS_DOWN:
 		return wxPoint(mNode->GetX() + 50, mNode->GetY() + 100);

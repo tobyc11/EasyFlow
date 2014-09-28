@@ -340,7 +340,8 @@ void CFlowEditor::FinishTempWire()
 		TWireList::iterator iter = mWires.begin();
 		while (iter != mWires.end())
 		{
-			if ((*iter)->from == mCurrWire->from || (*iter)->to == mCurrWire->to)
+			if ((((*iter)->from == mCurrWire->from) && ((*iter)->frSkt == mCurrWire->frSkt)) ||
+				((*iter)->to == mCurrWire->to) && ((*iter)->toSkt == mCurrWire->toSkt))
 			{
 				SWire* wire = *iter;
 				wire->from->GetNNode()->SetSibling(wire->frSkt, 0);
