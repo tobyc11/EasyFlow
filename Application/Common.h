@@ -19,7 +19,7 @@ Author: Toby Chen @ 2014
 
 #pragma once
 #define APP_NAME "EasyFlow"
-#define APP_VERSION "vAlpha"
+#define APP_VERSION "TechPreview"
 #define MAX_STRING_FRAGMENTS 4096
 
 class CMainFrame;

@@ -26,7 +26,7 @@ public:
 	typedef NNode* (*NodeFactory)();
 	UNodeRegister(char* name, NodeFactory factory, char* description);
 	int GetID();
-	NNode* CreateNode(char* name);
+	NNode* CreateNode(const char* name);
 	NNode* CreateNodeByID(int id);
 public:
 	static UNodeRegister* sRegisterLink;

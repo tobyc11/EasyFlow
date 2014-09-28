@@ -39,7 +39,7 @@ int UNodeRegister::GetID()
 	return mID;
 }
 
-NNode* UNodeRegister::CreateNode(char* name)
+NNode* UNodeRegister::CreateNode(const char* name)
 {
 	UNodeRegister* curr = sRegisterLink;
 	while (curr != 0)

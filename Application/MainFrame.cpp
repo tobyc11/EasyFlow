@@ -24,6 +24,7 @@ Author: Toby Chen @ 2014
 #include "FlowGraph.h"
 #include "NodePropertyUI.h"
 #include <wx/aboutdlg.h>
+#include <wx/wfstream.h>
 
 BEGIN_EVENT_TABLE(CMainFrame, wxFrame)
 	EVT_CLOSE(CMainFrame::OnClose)
@@ -169,12 +170,38 @@ void CMainFrame::OnRibbonNew(wxRibbonToolBarEvent& evt)
 
 void CMainFrame::OnRibbonOpen(wxRibbonToolBarEvent& evt)
 {
+	wxFileDialog
+		openFileDialog(this, wxT(""), "", "",
+		"Plain text (*.txt)|*.txt", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	if (openFileDialog.ShowModal() == wxID_CANCEL)
+		return;
 
+	wxFileInputStream input_stream(openFileDialog.GetPath());
+	if (!input_stream.IsOk())
+	{
+		wxMessageBox("Cannot open specified file!", "Error", wxOK | wxCENTRE | wxICON_ERROR);
+		return;
+	}
+
+	char buffer[65536];
+	input_stream.ReadAll(buffer, sizeof(buffer));
+	gEnv->FlowGraph->ReadFromStatus(buffer);
 }
 
 void CMainFrame::OnRibbonSave(wxRibbonToolBarEvent& evt)
 {
-
+	wxFileDialog dialog(this, wxT(""), wxEmptyString, wxEmptyString, "Plain text (*.txt)|*.txt", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+	if (dialog.ShowModal() == wxID_CANCEL)
+		return;
+	wxFileOutputStream outputStream(dialog.GetPath());
+	if (!outputStream.IsOk())
+	{
+		wxMessageBox("Cannot save to the specified file path!", "Error", wxOK | wxCENTRE | wxICON_ERROR);
+		return;
+	}
+	const char* status = gEnv->FlowGraph->GetStatus();
+	outputStream.Write(status, strlen(status));
+	outputStream.Close();
 }
 
 void CMainFrame::OnRibbonAbout(wxRibbonToolBarEvent& evt)

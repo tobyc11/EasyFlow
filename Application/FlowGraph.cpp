@@ -24,6 +24,7 @@ Author: Toby Chen @ 2014
 #include "NEvent.h"
 #include "NodePropertyAccessor.h"
 #include "Generator/GeneratorContext.h"
+#include <sstream>
 
 int CFlowGraph::sUnnamedCount = 0;
 
@@ -82,7 +83,51 @@ void CFlowGraph::CancelSpawnNode()
 
 void CFlowGraph::ReadFromStatus(const char* statusText)
 {
+	ClearAll();
+	std::istringstream inputStream(statusText);
+	std::stringstream tempStream;
+	std::string line, str0, str1;
+	NNode* currNode;
+	int stage = -1, int0, int1;
+	while (std::getline(inputStream, line))
+	{
+		if (line == "#")
+		{
+			stage = 0;
+			currNode = 0;
+			continue;
+		}
+		if (stage == -1)
+			return; // Shall never reach here
 
+		switch (stage)
+		{
+		case 0:
+			tempStream = std::stringstream(line);
+			tempStream >> str0 >> str1 >> int0 >> int1;
+			currNode = UNodeRegister::sRegisterLink->CreateNode(str1.c_str());
+			currNode->Init(str0);
+			currNode->SetPosition(int0, int1);
+			mNodes[currNode->GetName()] = currNode;
+			break;
+		case 1:
+			tempStream = std::stringstream(line);
+			while (tempStream >> str0)
+			{
+				if (str0.c_str()[str0.length() - 1] == ':')
+				{
+					str1 = str0.substr(0, str0.length() - 1);
+					continue;
+				}
+
+			}
+			break;
+		default:
+			break;
+		}
+		stage++;
+		//currNode = UNodeRegister::sRegisterLink->CreateNodeByID();
+	}
 }
 
 const char* CFlowGraph::GetStatus()
@@ -93,7 +138,7 @@ const char* CFlowGraph::GetStatus()
 		iter++)
 	{
 		char curr[256];
-		sprintf_s(curr, "%s %s %d %d\n",
+		sprintf_s(curr, "#\n%s %s %d %d\n",
 			(*iter).second->GetName().c_str(),
 			(*iter).second->GetType()->mName,
 			(*iter).second->GetX(),
@@ -126,12 +171,13 @@ const char* CFlowGraph::GetStatus()
 		for (TPropTable::iterator iter2 = (*iter).second->mPropTable.begin();
 			iter2 != (*iter).second->mPropTable.end(); iter2++)
 		{
-			sprintf_s(curr, "%s ", (*iter2).mValue.c_str());
+			sprintf_s(curr, "%s %s %s\n", (*iter2).mName.c_str(),
+				(*iter2).mType.c_str(), (*iter2).mValue.c_str());
 			strcat_s(mStatusText, curr);
 		}
 
-		sprintf_s(curr, "\n");
-		strcat_s(mStatusText, curr);
+		//sprintf_s(curr, "\n");
+		//strcat_s(mStatusText, curr);
 	}
 	return mStatusText;
 }

@@ -91,6 +91,7 @@ void CFlowEditor::ClearAll()
 
 	gEnv->FlowGraph->ClearAll();
 	gEnv->PropCtrl->DestroyUI();
+	gEnv->PropCtrl->SetTargetNode(0);
 	gEnv->MainFrame->PaintFlowEditor();
 }
 
