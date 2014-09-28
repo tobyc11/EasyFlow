@@ -96,7 +96,7 @@ ULinkedString* CFunction::GenerateStub()
 	ULinkedString* strEnd = AllocContent(strHead, 0);
 	
 	// Start filling in them
-	strHead->Content = mReturnType + " " + mName + "()\n{\n";
+	strHead->Content = "\n" + mReturnType + " " + mName + "()\n{\n";
 	strEnd->Content = "}\n";
 
 	ULinkedString* realcontent = AllocContent(strHead, strEnd);

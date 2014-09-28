@@ -120,10 +120,11 @@ void CMainFrame::CreateControls()
 
 	//Connect(wxEVT_PAINT, wxPaintEventHandler(CMainFrame::OnPaint));
 
-	//mOutput = new wxDialog(this, wxID_ANY, "Output");
-	//mLog = new wxTextCtrl(mOutput, wxID_ANY, wxEmptyString,
-	//	wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE |
-	//	wxTE_LEFT | wxTE_BESTWRAP | wxBORDER_NONE);
+	mOutput = new wxDialog(this, wxID_ANY, "Output", wxDefaultPosition,
+		wxDefaultSize, wxSYSTEM_MENU | wxRESIZE_BORDER | wxCLOSE_BOX | wxCAPTION);
+	mLog = new wxTextCtrl(mOutput, wxID_ANY, wxEmptyString,
+		wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_READONLY |
+		wxTE_LEFT | wxTE_BESTWRAP | wxBORDER_NONE);
 
 	mFlowGraph = new CFlowGraph();
 	new CNodePropertyUI;
@@ -166,7 +167,9 @@ void CMainFrame::OnRibbonAbout(wxRibbonToolBarEvent& evt)
 void CMainFrame::OnRibbonGenerate(wxRibbonToolBarEvent& evt)
 {
 	const char* statusText = gEnv->FlowGraph->GenerateCode();
-	wxMessageBox(statusText);
+	mOutput->Show(true);
+	mLog->SetValue(statusText);
+	//wxMessageBox(statusText);
 }
 
 void CMainFrame::OnRibbonDump(wxRibbonToolBarEvent& evt)

@@ -57,5 +57,8 @@ private:
 	CFlowEditor* mFlowEditor;
 	wxRibbonBar* mRibbon;
 	wxMenuBar* mMenubar;
+
+	wxDialog* mOutput;
+	wxTextCtrl* mLog;
 	DECLARE_EVENT_TABLE();
 };
