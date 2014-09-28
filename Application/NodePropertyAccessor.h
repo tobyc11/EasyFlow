@@ -35,4 +35,5 @@ public:
 	bool SetPropertyValue(const std::string& name, const std::string& value);
 protected:
 	NNode* mTargetNode;
+	std::string mErrorStr;
 };

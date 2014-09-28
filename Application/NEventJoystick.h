@@ -17,19 +17,14 @@ along with EasyFlow. If not, see <http://www.gnu.org/licenses/>.
 Author: Toby Chen @ 2014
 */
 
-#include "GlobalVar.h"
+#pragma once
+#include "NEvent.h"
 
-CGlobalVar::CGlobalVar()
+class NEventJoystick : public NEvent
 {
+public:
+	NEventJoystick(UNodeRegister* type);
+	~NEventJoystick();
 
-}
-
-CGlobalVar::~CGlobalVar()
-{
-
-}
-
-const char* CGlobalVar::ReturnCode()
-{
-	return mCodeBuffer.c_str();
-}
+	virtual void GenerateCode() override;
+};

@@ -17,19 +17,29 @@ along with EasyFlow. If not, see <http://www.gnu.org/licenses/>.
 Author: Toby Chen @ 2014
 */
 
-#include "GlobalVar.h"
+#pragma once
+#include <string>
 
-CGlobalVar::CGlobalVar()
+// Linked string class to help code generation
+class ULinkedString
 {
+	friend class CFunction;
+public:
 
-}
+	// Constructor: 0 as NULL
+	//ULinkedString* InsertBefore();
+	//ULinkedString* InsertAfter();
 
-CGlobalVar::~CGlobalVar()
-{
+	std::string Content;
 
-}
+	// C Wrappers to avoid problematic C++ STL
+	const char* Read();
+	void Write(const char* content);
+private:
+	ULinkedString(ULinkedString* pPrev, ULinkedString* pNext);
+	~ULinkedString();
 
-const char* CGlobalVar::ReturnCode()
-{
-	return mCodeBuffer.c_str();
-}
+	// You don't need to call this directly, destructor does it
+	void Remove();
+	ULinkedString *mPrev, *mNext;
+};

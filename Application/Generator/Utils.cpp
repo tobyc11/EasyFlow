@@ -17,19 +17,49 @@ along with EasyFlow. If not, see <http://www.gnu.org/licenses/>.
 Author: Toby Chen @ 2014
 */
 
-#include "GlobalVar.h"
+#include "Utils.h"
 
-CGlobalVar::CGlobalVar()
+ULinkedString::ULinkedString(ULinkedString* pPrev, ULinkedString* pNext)
 {
-
+	mPrev = pPrev;
+	mNext = pNext;
+	if (mPrev)
+		mPrev->mNext = this;
+	if (mNext)
+		mNext->mPrev = this;
 }
 
-CGlobalVar::~CGlobalVar()
+ULinkedString::~ULinkedString()
 {
-
+	Remove();
 }
 
-const char* CGlobalVar::ReturnCode()
+//ULinkedString* ULinkedString::InsertBefore()
+//{
+//	
+//}
+//
+//ULinkedString* ULinkedString::InsertAfter()
+//{
+//
+//}
+
+const char* ULinkedString::Read()
 {
-	return mCodeBuffer.c_str();
+	return Content.c_str();
+}
+
+void ULinkedString::Write(const char* content)
+{
+	Content = std::string(content);
+}
+
+void ULinkedString::Remove()
+{
+	if (mPrev)
+		mPrev->mNext = this->mNext;
+	if (mNext)
+		mNext->mPrev = this->mPrev;
+	mPrev = 0;
+	mNext = 0;
 }

@@ -23,6 +23,7 @@ Author: Toby Chen @ 2014
 CNodePropertyAccessor::CNodePropertyAccessor()
 {
 	mTargetNode = 0;
+	mErrorStr = std::string(ERROR_STRING);
 }
 
 CNodePropertyAccessor::~CNodePropertyAccessor()
@@ -58,8 +59,7 @@ std::string& CNodePropertyAccessor::GetPropertyValue(const std::string& name)
 			}
 		}
 	}
-	//assert(1); // BUUUUGGGGG!!!
-	return const_cast<std::string&>(name);
+	return mErrorStr;
 }
 
 bool CNodePropertyAccessor::SetPropertyValue(const std::string& name, const std::string& value)

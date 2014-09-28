@@ -28,6 +28,19 @@ wxIMPLEMENT_APP(CApplication);
 
 bool CApplication::OnInit()
 {
+	HMODULE hModule = GetModuleHandle(NULL);
+	TCHAR path[MAX_PATH];
+	GetModuleFileName(hModule, path, MAX_PATH);
+	int i;
+	for (i = MAX_PATH - 1; i >= 0; i--)
+	{
+		if (path[i] != TEXT('\\'))
+			path[i] = 0;
+		else
+			break;
+	}
+	SetCurrentDirectory(path);
+
 	mRenderOn = false;
 	mMainFrame = new CMainFrame();
 	mMainFrame->Show();

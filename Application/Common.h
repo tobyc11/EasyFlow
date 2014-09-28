@@ -19,13 +19,15 @@ Author: Toby Chen @ 2014
 
 #pragma once
 #define APP_NAME "EasyFlow"
-#define APP_VERSION "0.1 Alpha"
+#define APP_VERSION "vAlpha"
+#define MAX_STRING_FRAGMENTS 4096
 
 class CMainFrame;
 class CFlowGraph;
 class CFlowEditor;
 class CToolBox;
 class CNodePropertyUI;
+class CGeneratorContext;
 struct CGlobalEnvironment
 {
 	CMainFrame* MainFrame;
@@ -33,6 +35,9 @@ struct CGlobalEnvironment
 	CFlowGraph* FlowGraph;
 	CFlowEditor* FlowEditor;
 	CNodePropertyUI* PropCtrl;
+	CGeneratorContext* GeneratorContext;
 };
 
 extern CGlobalEnvironment* gEnv;
+
+#define ERROR_STRING "!ERROR!"

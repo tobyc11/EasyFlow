@@ -18,6 +18,7 @@ Author: Toby Chen @ 2014
 */
 
 #pragma once
+#include <string>
 
 class CGlobalVar
 {
@@ -25,4 +26,7 @@ public:
 	CGlobalVar();
 	~CGlobalVar();
 	const char* ReturnCode();
+
+private:
+	std::string mCodeBuffer;
 };

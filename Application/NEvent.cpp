@@ -17,19 +17,31 @@ along with EasyFlow. If not, see <http://www.gnu.org/licenses/>.
 Author: Toby Chen @ 2014
 */
 
-#include "GlobalVar.h"
+#include "NEvent.h"
 
-CGlobalVar::CGlobalVar()
+REGISTER_NODE(NEvent, "DO NOT USE!")
+
+NEvent::NEvent(UNodeRegister* type) : NNode(type)
+{
+	// User modifiable code
+	// Add properties
+	{
+		CNodeProperty prop;
+		prop.mOwner = this;
+		prop.mName = "CFlag";
+		prop.mType = "hT"; // T:Text (D:Dropdown Menu) C:CheckBox
+		// Any other value assign to mType cause the prop to be hidden
+		prop.mValue = "E";
+		mPropTable.push_back(prop);
+	}
+}
+
+NEvent::~NEvent()
 {
 
 }
 
-CGlobalVar::~CGlobalVar()
+void NEvent::GenerateCode()
 {
-
-}
-
-const char* CGlobalVar::ReturnCode()
-{
-	return mCodeBuffer.c_str();
+	// Dummy
 }

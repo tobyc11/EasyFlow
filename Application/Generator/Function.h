@@ -18,11 +18,33 @@ Author: Toby Chen @ 2014
 */
 
 #pragma once
+#include "../Common.h"
+#include <string>
 
+class ULinkedString;
 class CFunction
 {
 public:
 	CFunction();
 	~CFunction();
+
+	void SetName(const char*);
+	const char* GetName() {	mName.c_str(); }
+	void SetReturnType(const char*);
+	const char* GetReturnType() { mReturnType.c_str(); }
+
+	ULinkedString* AllocContent(ULinkedString* prev = 0, ULinkedString* next = 0);
+	void DeleteContent(ULinkedString* pContent);
+	void DeleteContent(int index);
+
+	// To generate things like
+	// int BluhBluh()
+	// {}
+	ULinkedString* GenerateStub();
+
 	const char* ReturnCode();
+private:
+	std::string mName, mReturnType;
+	std::string mCodeBuffer;
+	ULinkedString* mContents[MAX_STRING_FRAGMENTS];
 };

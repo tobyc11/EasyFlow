@@ -19,7 +19,7 @@ Author: Toby Chen @ 2014
 
 #include "NNode.h"
 
-REGISTER_NODE(NNode, "Basic Node/Does nothing");
+REGISTER_NODE(NNode, "DO NOT USE!!!!!");
 
 //NNode::NNode()
 //{
@@ -119,7 +119,11 @@ void NNode::SetSibling(int sib, NNode* value)
 	return;
 }
 
-std::string NNode::GenerateCode()
+void NNode::GenerateCode()
 {
-	return std::string("");
+}
+
+void NNode::GenerateCodeInto(ULinkedString*)
+{
+
 }

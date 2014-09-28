@@ -18,6 +18,7 @@ Author: Toby Chen @ 2014
 */
 
 #pragma once
+#include <vector>
 
 class CFunction;
 class CGlobalVar;
@@ -27,6 +28,10 @@ class CMainTask
 public:
 	CMainTask();
 	~CMainTask();
+	void AddEventListener(CFunction*);
+	const char* ReturnCode();
+private:
+	std::string mCodeBuffer;
 };
 
 class CGeneratorContext
@@ -45,8 +50,21 @@ public:
 	CGlobalVar* AddGlobalVar(const char* type, const char* name);
 	// bool AddPortDefinition();
 
+	inline CMainTask* GetMainTask()
+	{
+		return mMainTask;
+	}
+
 	const char* ReturnCode();
 
 private:
 	CMainTask* mMainTask;
+	typedef std::vector<CFunction*> TLFunction;
+	typedef std::vector<CGlobalVar*> TLGlobalVar;
+	TLFunction mFunctions;
+	TLGlobalVar mGlobalVars;
+	void ReleaseFunctions();
+	void ReleaseGlobalVars();
+
+	std::string mCodeBuffer;
 };

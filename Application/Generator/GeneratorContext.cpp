@@ -31,6 +31,16 @@ CMainTask::~CMainTask()
 
 }
 
+void CMainTask::AddEventListener(CFunction* funcListener)
+{
+
+}
+
+const char* CMainTask::ReturnCode()
+{
+	return mCodeBuffer.c_str();
+}
+
 CGeneratorContext::CGeneratorContext()
 {
 	mMainTask = 0;
@@ -40,10 +50,14 @@ CGeneratorContext::~CGeneratorContext()
 {
 	if (mMainTask)
 		delete mMainTask;
+	ReleaseFunctions();
+	ReleaseGlobalVars();
 }
 
 CMainTask* CGeneratorContext::InitMainTask(int mainTaskType)
 {
+	mFunctions.clear();
+	mGlobalVars.clear();
 	if (mainTaskType == MAIN_ITERATE_ALL_EVENTS)
 	{
 		mMainTask = new CMainTask();
@@ -55,15 +69,58 @@ CMainTask* CGeneratorContext::InitMainTask(int mainTaskType)
 
 CFunction* CGeneratorContext::AddFunction(const char* name)
 {
-
+	CFunction* function = new CFunction();
+	function->SetName(name);
+	mFunctions.push_back(function);
+	return function;
 }
 
 CGlobalVar* CGeneratorContext::AddGlobalVar(const char* type, const char* name)
 {
-
+	CGlobalVar* gvar = new CGlobalVar();
+	mGlobalVars.push_back(gvar);
+	return 0;
 }
 
 const char* CGeneratorContext::ReturnCode()
 {
+	mCodeBuffer = std::string();
 
+	// Generate code for global variables
+	for (TLGlobalVar::iterator iter = mGlobalVars.begin();
+		iter != mGlobalVars.end(); iter++)
+	{
+
+	}
+
+	// Generate code for functions
+	for (TLFunction::iterator iter = mFunctions.begin();
+		iter != mFunctions.end(); iter++)
+	{
+		mCodeBuffer += (*iter)->ReturnCode();
+	}
+
+	// Generate main task
+
+	return mCodeBuffer.c_str();
+}
+
+void CGeneratorContext::ReleaseFunctions()
+{
+	for (TLFunction::iterator iter = mFunctions.begin();
+		iter != mFunctions.end(); iter++)
+	{
+		delete (*iter);
+	}
+	mFunctions.clear();
+}
+
+void CGeneratorContext::ReleaseGlobalVars()
+{
+	for (TLGlobalVar::iterator iter = mGlobalVars.begin();
+		iter != mGlobalVars.end(); iter++)
+	{
+		delete (*iter);
+	}
+	mGlobalVars.clear();
 }

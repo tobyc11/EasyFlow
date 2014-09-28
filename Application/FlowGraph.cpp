@@ -21,6 +21,9 @@ Author: Toby Chen @ 2014
 #include "FlowGraph.h"
 #include "NInterface.h"
 #include "NNode.h"
+#include "NEvent.h"
+#include "NodePropertyAccessor.h"
+#include "Generator/GeneratorContext.h"
 
 int CFlowGraph::sUnnamedCount = 0;
 
@@ -114,6 +117,33 @@ const char* CFlowGraph::GetStatus()
 
 const char* CFlowGraph::GenerateCode()
 {
+	CGeneratorContext* genContext = new CGeneratorContext();
+	CMainTask* mainTask = genContext->InitMainTask(CGeneratorContext::MAIN_ITERATE_ALL_EVENTS);
+	gEnv->GeneratorContext = genContext;
 
-	return 0;
+	CNodePropertyAccessor propAcc;
+	for (TNodeMap::iterator iter = mNodes.begin();
+		iter != mNodes.end();
+		iter++)
+	{
+		propAcc.SetTargetNode((*iter).second);
+		std::string& value = propAcc.GetPropertyValue("CFlag");
+		if (value != std::string("E"))
+			continue;
+
+		// This node has property CFlag == E
+		// Assume that it is an Event Node
+		// Start generating!!!
+		// NEvent* eventNode = static_cast<NEvent*>((*iter).second);
+		NNode* eventNode = static_cast<NNode*>((*iter).second);
+		eventNode->GenerateCode();
+	}
+
+	const char* pCode = genContext->ReturnCode();
+	mCode = std::string("Failed");
+	if (pCode)
+		mCode = std::string(pCode);
+	gEnv->GeneratorContext = 0;
+	delete genContext;
+	return mCode.c_str();
 }

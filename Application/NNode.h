@@ -18,6 +18,7 @@ Author: Toby Chen @ 2014
 */
 
 #pragma once
+#include "Common.h"
 #include "NInterface.h"
 #include <string>
 #include <vector>
@@ -33,6 +34,7 @@ public:
 
 typedef std::vector<CNodeProperty> TPropTable;
 
+class ULinkedString;
 class NNode
 {
 public:
@@ -55,7 +57,8 @@ public:
 
 	virtual NNode* GetSibling(int sib);
 	virtual void SetSibling(int sib, NNode* value);
-	virtual std::string GenerateCode();
+	virtual void GenerateCode();
+	virtual void GenerateCodeInto(ULinkedString*);
 
 	//Make the property table public so that CPropertyController can access it
 	TPropTable mPropTable;

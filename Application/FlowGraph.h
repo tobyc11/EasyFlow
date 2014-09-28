@@ -41,4 +41,5 @@ private:
 	TNodeMap mNodes;
 	NNode* mSpawningNode;
 	char mStatusText[4096];
+	std::string mCode;
 };

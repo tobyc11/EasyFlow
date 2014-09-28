@@ -1,0 +1,1 @@
+Only use C++ STL containers as internal containers, don't pass them around, it'll mess up.
