@@ -39,7 +39,11 @@ public:
 	void OnPaint(wxPaintEvent& evt);
 	void OnQuit(wxCommandEvent& evt);
 	void OnAbout(wxCommandEvent& evt);
+	void OnRibbonNew(wxRibbonToolBarEvent& evt);
+	void OnRibbonOpen(wxRibbonToolBarEvent& evt);
+	void OnRibbonSave(wxRibbonToolBarEvent& evt);
 	void OnRibbonAbout(wxRibbonToolBarEvent& evt);
+
 	void OnRibbonGenerate(wxRibbonToolBarEvent& evt);
 	void OnRibbonDump(wxRibbonToolBarEvent& evt);
 	void OnRibbonSaveProp(wxRibbonToolBarEvent& evt);

@@ -64,7 +64,35 @@ void CFlowEditor::CreateControls()
 	SetBackgroundColour(wxColour(200, 200, 200));
 }
 
-#define GETMF() CMainFrame* mf = (CMainFrame*)this->GetParent()->GetParent();
+void CFlowEditor::ClearAll()
+{
+	mCurrStr = wxString();
+	mOX = mOY = 0;
+	mDragging = false;
+	mCurrWire = 0;
+	mGrabbedNode = 0;
+	mGrabbingWire = 0;
+	mGWRight = mGWLeft = false;
+
+	for (TWireList::iterator iter = mWires.begin();
+		iter != mWires.end();
+		iter++)
+	{
+		delete (*iter);
+	}
+	mWires.clear();
+
+	for (TFlowNodeNPList::iterator iter = mNodeProxy.begin();
+		iter != mNodeProxy.end(); iter++)
+	{
+		delete (*iter);
+	}
+	mNodeProxy.clear();
+
+	gEnv->FlowGraph->ClearAll();
+	gEnv->PropCtrl->DestroyUI();
+	gEnv->MainFrame->PaintFlowEditor();
+}
 
 void CFlowEditor::OnPaint(wxPaintEvent& evt)
 {
@@ -135,7 +163,7 @@ void CFlowEditor::OnMouseMove(wxMouseEvent& evt)
 			gEnv->MainFrame->PaintFlowEditor();
 		}
 	}
-	GETMF();
+	CMainFrame* mf = gEnv->MainFrame;
 	CFlowGraph* fg = mf->GetFlowGraph();
 	NNode* sn = fg->GetSpawningNode();
 	if (sn)
@@ -152,7 +180,7 @@ void CFlowEditor::OnMouseMove(wxMouseEvent& evt)
 // Process event when left mouse button is pressed
 void CFlowEditor::OnLeftDown(wxMouseEvent& evt)
 {
-	GETMF();
+	CMainFrame* mf = gEnv->MainFrame;
 	CFlowGraph* flowGraph = mf->GetFlowGraph();
 	if (flowGraph->GetSpawningNode())
 	{
@@ -216,7 +244,7 @@ void CFlowEditor::OnLeftUp(wxMouseEvent& evt)
 
 void CFlowEditor::OnRightDown(wxMouseEvent& evt)
 {
-	GETMF();
+	CMainFrame* mf = gEnv->MainFrame;
 	CFlowGraph* flowGraph = mf->GetFlowGraph();
 	mDragOX = evt.GetX();
 	mDragOY = evt.GetY();
@@ -230,7 +258,7 @@ void CFlowEditor::OnRightDown(wxMouseEvent& evt)
 
 void CFlowEditor::OnRightUp(wxMouseEvent& evt)
 {
-	GETMF();
+	CMainFrame* mf = gEnv->MainFrame;
 	CFlowGraph* flowGraph = mf->GetFlowGraph();
 	mDragging = false;
 	if (flowGraph->GetSpawningNode())
@@ -241,7 +269,7 @@ void CFlowEditor::OnRightUp(wxMouseEvent& evt)
 
 void CFlowEditor::Render(wxDC& dc)
 {
-	GETMF();
+	CMainFrame* mf = gEnv->MainFrame;
 	CFlowGraph* fg = mf->GetFlowGraph();
 
 	dc.Clear();

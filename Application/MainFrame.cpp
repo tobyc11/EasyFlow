@@ -29,6 +29,9 @@ BEGIN_EVENT_TABLE(CMainFrame, wxFrame)
 	EVT_CLOSE(CMainFrame::OnClose)
 	EVT_MENU(wxID_EXIT, CMainFrame::OnQuit)
 	EVT_MENU(wxID_ABOUT, CMainFrame::OnAbout)
+	EVT_RIBBONTOOLBAR_CLICKED(wxID_NEW, CMainFrame::OnRibbonNew)
+	EVT_RIBBONTOOLBAR_CLICKED(wxID_OPEN, CMainFrame::OnRibbonOpen)
+	EVT_RIBBONTOOLBAR_CLICKED(wxID_SAVE, CMainFrame::OnRibbonSave)
 	EVT_RIBBONTOOLBAR_CLICKED(wxID_ABOUT, CMainFrame::OnRibbonAbout)
 	EVT_RIBBONTOOLBAR_CLICKED(wxID_EXECUTE, CMainFrame::OnRibbonDump)
 	EVT_RIBBONTOOLBAR_CLICKED(wxID_SAVEAS, CMainFrame::OnRibbonSaveProp)
@@ -157,6 +160,21 @@ void CMainFrame::OnAbout(wxCommandEvent& evt)
 	aboutInfo.SetLicence(wxT("Source code is available in GPLv3\n")
 		wxT("https://github.com/cyj0912/EasyFlow"));
 	wxAboutBox(aboutInfo);
+}
+
+void CMainFrame::OnRibbonNew(wxRibbonToolBarEvent& evt)
+{
+	gEnv->FlowEditor->ClearAll();
+}
+
+void CMainFrame::OnRibbonOpen(wxRibbonToolBarEvent& evt)
+{
+
+}
+
+void CMainFrame::OnRibbonSave(wxRibbonToolBarEvent& evt)
+{
+
 }
 
 void CMainFrame::OnRibbonAbout(wxRibbonToolBarEvent& evt)

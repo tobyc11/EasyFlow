@@ -26,12 +26,14 @@ class CFlowGraph
 public:
 	CFlowGraph();
 	~CFlowGraph();
+	void ClearAll();
 
 	NNode* StartSpawnNode(int id);
 	NNode* GetSpawningNode();
 	void SpawnNode(NNode*);
 	void CancelSpawnNode();
 
+	void ReadFromStatus(const char* statusText);
 	const char* GetStatus();
 	const char* GenerateCode();
 

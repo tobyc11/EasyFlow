@@ -31,6 +31,7 @@ public:
 	CFlowEditor(wxWindow *parent, wxWindowID winid = wxID_ANY);
 	~CFlowEditor();
 	void CreateControls();
+	void ClearAll();
 
 	void OnPaint(wxPaintEvent& evt);
 	void OnMouseMove(wxMouseEvent& evt);

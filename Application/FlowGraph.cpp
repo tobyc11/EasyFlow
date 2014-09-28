@@ -35,7 +35,18 @@ CFlowGraph::CFlowGraph()
 
 CFlowGraph::~CFlowGraph()
 {
+	ClearAll();
+}
 
+void CFlowGraph::ClearAll()
+{
+	for (TNodeMap::iterator iter = mNodes.begin();
+		iter != mNodes.end();
+		iter++)
+	{
+		delete (*iter).second;
+	}
+	mNodes.clear();
 }
 
 NNode * CFlowGraph::StartSpawnNode(int id)
@@ -67,6 +78,11 @@ void CFlowGraph::CancelSpawnNode()
 	if (mSpawningNode)
 		delete mSpawningNode;
 	mSpawningNode = 0;
+}
+
+void CFlowGraph::ReadFromStatus(const char* statusText)
+{
+
 }
 
 const char* CFlowGraph::GetStatus()
