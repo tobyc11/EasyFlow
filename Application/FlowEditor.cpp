@@ -49,6 +49,8 @@ CFlowEditor::CFlowEditor(wxWindow *parent, wxWindowID winid)
 	mDragging = false;
 	mCurrWire = 0;
 	mGrabbedNode = 0;
+	mGrabbingWire = 0;
+	mGWRight = mGWLeft = false;
 	//mRenderLock = 0;
 }
 
@@ -367,6 +369,43 @@ SWire* CFlowEditor::GetTempWire()
 	return mCurrWire;
 }
 
+SWire* CFlowEditor::FindWire(CFlowNodeRenderProxy* connectedNode, int socket)
+{
+	for (TWireList::iterator iter = mWires.begin();
+		iter != mWires.end();
+		iter++)
+	{
+		if ((((*iter)->from == connectedNode) && ((*iter)->frSkt == socket)) ||
+			((*iter)->to == connectedNode) && ((*iter)->toSkt == socket))
+		{
+			return *iter;
+		}
+	}
+	return 0;
+}
+
+void CFlowEditor::EraseWire(SWire* wire)
+{
+	if (!wire)
+		return;
+	wire->from->GetNNode()->SetSibling(wire->frSkt, 0);
+	wire->to->GetNNode()->SetSibling(wire->toSkt, 0);
+
+	TWireList::iterator toErase = mWires.end();
+	for (TWireList::iterator iter = mWires.begin();
+		iter != mWires.end();
+		iter++)
+	{
+		if ((*iter) == wire)
+			toErase = iter;
+	}
+	if (toErase != mWires.end())
+	{
+		delete (*toErase);
+		mWires.erase(toErase);
+	}
+}
+
 void CFlowEditor::Grab(CFlowNodeRenderProxy* target, int wndX, int wndY)
 {
 	mGrabbedNode = target;
@@ -378,10 +417,11 @@ void CFlowEditor::StopGrabbing()
 	mGrabbedNode = 0;
 }
 
-
 // Implementations for SWire
 void SWire::UpdatePosition()
 {
-	this->frPos = this->from->GetSocketCenter(this->frSkt);
-	this->toPos = this->to->GetSocketCenter(this->toSkt);
+	if (this->from)
+		this->frPos = this->from->GetSocketCenter(this->frSkt);
+	if (this->to)
+		this->toPos = this->to->GetSocketCenter(this->toSkt);
 }

@@ -51,6 +51,9 @@ public:
 	void FinishTempWire(); // Caution: May cause memory leak
 	SWire* GetTempWire();
 
+	SWire* FindWire(CFlowNodeRenderProxy* connectedNode, int socket);
+	void EraseWire(SWire* wire);
+
 	void Grab(CFlowNodeRenderProxy* target, int wndX, int wndY);
 	void StopGrabbing();
 
@@ -70,6 +73,9 @@ private:
 	//
 	TWireList mWires;
 	SWire* mCurrWire;
+
+	SWire* mGrabbingWire;
+	bool mGWLeft, mGWRight;
 
 	// Support moving nodes
 	wxPoint mGrabWorldOrigin;

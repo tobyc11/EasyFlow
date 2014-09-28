@@ -115,10 +115,20 @@ void CFlowNodeRenderProxy::ProcessEvents(SRenderEvtParams params)
 	}
 
 LEFT_DOWN:
+	SWire* existWire;
 	SWire* tWire;
+	CFlowNodeRenderProxy* theOtherNode;
 	switch (DeterminePart(params.x, params.y))
 	{
 	case PART_S_LEFT:
+		if (existWire = mParent->FindWire(this, NNode::NS_LEFT))
+		{
+			theOtherNode = existWire->to == this ? existWire->from : existWire->to;
+			tWire = mParent->SpawnTempWire(theOtherNode);
+			tWire->frSkt = NNode::NS_RIGHT;
+			tWire->UpdatePosition();
+			mParent->EraseWire(existWire);
+		}
 		break;
 	case PART_S_RIGHT:
 		tWire = mParent->SpawnTempWire(this);
@@ -149,6 +159,14 @@ LEFT_UP:
 		}
 		break;
 	case PART_S_RIGHT:
+		if (tWire = mParent->GetTempWire())
+		{
+			tWire->to = this;
+			tWire->toSkt = NNode::NS_LEFT;
+			tWire->UpdatePosition();
+			mParent->FinishTempWire();
+			mParent->Render(wxClientDC(mParent));
+		}
 		break;
 	case PART_BODY:
 		mParent->StopGrabbing();
