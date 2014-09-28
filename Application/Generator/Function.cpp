@@ -51,6 +51,7 @@ void CFunction::SetReturnType(const char* returnType)
 ULinkedString* CFunction::AllocContent(ULinkedString* prev /*= 0*/, ULinkedString* next /*= 0*/)
 {
 	ULinkedString* temp = new ULinkedString(prev, next);
+	temp->pMemMgr = this;
 	int i;
 	for (i = 0; i < MAX_STRING_FRAGMENTS; i++)
 		if (mContents[i] == 0)

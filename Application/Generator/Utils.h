@@ -30,6 +30,7 @@ public:
 	//ULinkedString* InsertBefore();
 	//ULinkedString* InsertAfter();
 
+	void* pMemMgr;
 	std::string Content;
 
 	// C Wrappers to avoid problematic C++ STL
@@ -41,5 +42,7 @@ private:
 
 	// You don't need to call this directly, destructor does it
 	void Remove();
+
+public:
 	ULinkedString *mPrev, *mNext;
 };

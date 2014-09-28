@@ -18,6 +18,10 @@ Author: Toby Chen @ 2014
 */
 
 #include "NNode.h"
+#include <assert.h>
+
+// This has to match INDENT_INDEX
+const char* NNode::sIndent = "																";
 
 REGISTER_NODE(NNode, "DO NOT USE!!!!!");
 
@@ -121,9 +125,10 @@ void NNode::SetSibling(int sib, NNode* value)
 
 void NNode::GenerateCode()
 {
+	assert(0);
 }
 
-void NNode::GenerateCodeInto(ULinkedString*)
+void NNode::GenerateCodeInto(ULinkedString* strThis, int indent)
 {
-
+	assert(0);
 }

@@ -42,7 +42,7 @@ TPropTable& CNodePropertyAccessor::GetPropTable()
 	{
 		return mTargetNode->mPropTable;
 	}
-	//assert(1); // BUG!!!
+	//assert(0); // BUG!!!
 	return mTargetNode->mPropTable;
 }
 

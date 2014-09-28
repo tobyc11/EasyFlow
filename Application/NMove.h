@@ -25,4 +25,5 @@ class NMove : public NNode
 public:
 	NMove(UNodeRegister* type);
 	~NMove();
+	virtual void GenerateCodeInto(ULinkedString* strThis, int indent);
 };

@@ -18,6 +18,8 @@ Author: Toby Chen @ 2014
 */
 
 #include "NMove.h"
+#include "Generator/Utils.h"
+#include "Generator/Function.h"
 
 REGISTER_NODE(NMove, "Control Motion")
 
@@ -46,4 +48,18 @@ NMove::NMove(UNodeRegister* type) : NNode(type)
 NMove::~NMove()
 {
 
+}
+
+void NMove::GenerateCodeInto(ULinkedString* strThis, int indent)
+{
+	strThis->Content += sIndent[INDENT_INDEX - indent];
+	strThis->Content += "MoveTo();\n";
+
+	CFunction* currFuction = (CFunction*)strThis->pMemMgr;
+	ULinkedString* strNextNode = currFuction->AllocContent(strThis, strThis->mNext);
+	NNode* sibling;
+	if (sibling = GetSibling(NS_RIGHT))
+	{
+		sibling->GenerateCodeInto(strNextNode, indent + 1);
+	}
 }

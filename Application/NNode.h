@@ -58,7 +58,7 @@ public:
 	virtual NNode* GetSibling(int sib);
 	virtual void SetSibling(int sib, NNode* value);
 	virtual void GenerateCode();
-	virtual void GenerateCodeInto(ULinkedString*);
+	virtual void GenerateCodeInto(ULinkedString* strThis, int indent);
 
 	//Make the property table public so that CPropertyController can access it
 	TPropTable mPropTable;
@@ -68,4 +68,7 @@ protected:
 	std::string mName;
 	int mX, mY;
 	NNode *mLeftSib, *mRightSib, *mDownSib;
+
+#define INDENT_INDEX 16
+	static const char* sIndent;
 };
