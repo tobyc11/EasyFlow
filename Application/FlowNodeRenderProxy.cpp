@@ -144,7 +144,7 @@ LEFT_UP:
 			tWire->toPos = wxPoint(mNode->GetX(), mNode->GetY() + 38);
 			tWire->toSkt = NNode::NS_LEFT;
 			mParent->FinishTempWire();
-			mParent->AddWire(tWire);
+			// mParent->AddWire(tWire); Already done by FinishTempWire()
 			mParent->Render(wxClientDC(mParent));
 		}
 		break;

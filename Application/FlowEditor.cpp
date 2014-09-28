@@ -204,6 +204,7 @@ void CFlowEditor::OnLeftUp(wxMouseEvent& evt)
 			(*iter)->ProcessEvents(params);
 	}
 
+	// If temp wire is still there, then it has to be dropped into white space
 	if (GetTempWire())
 	{
 		CancelTempWire();
@@ -334,18 +335,21 @@ void CFlowEditor::FinishTempWire()
 		}
 
 		// Test if there is already wires linked to point
-		for (TWireList::iterator iter = mWires.begin();
-			iter != mWires.end();
-			iter++)
+		TWireList::iterator iter = mWires.begin();
+		while (iter != mWires.end())
 		{
-			if ((*iter)->from == mCurrWire->from)
+			if ((*iter)->from == mCurrWire->from || (*iter)->to == mCurrWire->to)
 			{
-				// Handle form same socket
+				SWire* wire = *iter;
+				wire->from->GetNNode()->SetSibling(wire->frSkt, 0);
+				wire->to->GetNNode()->SetSibling(wire->toSkt, 0);
+				delete wire;
+				TWireList::iterator toErase = iter;
+				iter++;
+				mWires.erase(toErase);
 			}
-			if ((*iter)->to == mCurrWire->to)
-			{
-				// Handle to same socket
-			}
+			else
+				iter++;
 		}
 
 		// Update the underlying CFlowGraph
@@ -353,6 +357,7 @@ void CFlowEditor::FinishTempWire()
 		manleft->SetSibling(mCurrWire->frSkt, mCurrWire->to->GetNNode());
 		NNode *manright = mCurrWire->to->GetNNode();
 		manright->SetSibling(mCurrWire->toSkt, mCurrWire->from->GetNNode());
+		this->AddWire(mCurrWire);
 		mCurrWire = 0;
 	}
 }
