@@ -18,8 +18,9 @@ Author: Toby Chen @ 2014
 */
 
 #include "NIf.h"
-#include "Generator/GeneratorContext.h"
+#include "NodePropertyAccessor.h"
 #include "Generator/Function.h"
+#include "Generator/Utils.h"
 
 REGISTER_NODE(NIf, "If statement")
 
@@ -33,6 +34,14 @@ NIf::NIf(UNodeRegister* type) : NNode(type)
 		prop.mValue = "RR";
 		mPropTable.push_back(prop);
 	}
+	{
+		CNodeProperty prop;
+		prop.mOwner = this;
+		prop.mName = "Statement";
+		prop.mType = "T";
+		prop.mValue = "true";
+		mPropTable.push_back(prop);
+	}
 	// ADD YOUR OWN PROPERTIES HERE!
 }
 
@@ -43,5 +52,37 @@ NIf::~NIf()
 
 void NIf::GenerateCodeInto(ULinkedString* strThis, int indent)
 {
+	CNodePropertyAccessor propAcc;
+	propAcc.SetTargetNode(this);
+	std::string statement = propAcc.GetPropertyValue("Statement");
+	strThis->Content += sIndent[INDENT_INDEX - 5];
+	strThis->Content += "if(" + statement + ")\n";
+	strThis->Content += sIndent[INDENT_INDEX - indent];
+	strThis->Content += "{\n";
 
+	CFunction* currFuction = (CFunction*)strThis->pMemMgr;
+	ULinkedString* strNextNode = currFuction->AllocContent(strThis, strThis->mNext);
+	ULinkedString* strMiddle = currFuction->AllocContent(strNextNode, strNextNode->mNext);
+
+	NNode* sibling;
+	if (sibling = GetSibling(NS_RIGHT))
+	{
+		sibling->GenerateCodeInto(strNextNode, indent + 1);
+	}
+
+	strMiddle->Content += sIndent[INDENT_INDEX - indent];
+	strMiddle->Content += "}\n";
+
+	if (sibling = GetSibling(NS_RIGHT2))
+	{
+		ULinkedString* strRight2 = currFuction->AllocContent(strMiddle, strMiddle->mNext);
+		ULinkedString* strFinal = currFuction->AllocContent(strRight2, strRight2->mNext);
+		strMiddle->Content += sIndent[INDENT_INDEX - indent];
+		strMiddle->Content += "else\n";
+		strMiddle->Content += sIndent[INDENT_INDEX - indent];
+		strMiddle->Content += "{\n";
+		sibling->GenerateCodeInto(strRight2, indent + 1);
+		strFinal->Content += sIndent[INDENT_INDEX - indent];
+		strFinal->Content += "}\n";
+	}
 }
