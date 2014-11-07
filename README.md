@@ -8,7 +8,11 @@ Please read License.txt which is a copy of the GNU General Public License V3 bef
 
 To compile, download ThirdParty.7z from Release section of the repository.
 
- * Link: https://github.com/cyj0912/EasyFlow/releases/download/v0.1-alpha/ThirdParty.7z
- * Link: https://github.com/cyj0912/EasyFlow/releases/download/v0.1-alpha2/ThirdPartyD.7z
+ * Release: https://github.com/cyj0912/EasyFlow/releases/download/v0.1-alpha/ThirdParty.7z
+ * Debug: https://github.com/cyj0912/EasyFlow/releases/download/v0.1-alpha2/ThirdPartyD.7z
 
 Extract into the root folder. Run cmake from the root folder.
+
+### Run
+
+After the compilation, the excutable file should be placed in the Distribution folder.
